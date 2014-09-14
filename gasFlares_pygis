@@ -1,0 +1,18 @@
+flare = qgis.utils.iface.activeLayer()
+#flare.featureCount()
+i =round (-59.9492, 4)
+j =round (-3.3000, 4)
+
+def coorF(point, raster):
+    return flare.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
+     #print (res.results(), i, j)
+
+
+while (j<-2.000):
+    j= round((j + 0.0001), 4)
+    while (i<-55.000):
+        coord_flare = coorF(QgsPoint(i, j), flare)
+        print (coord_flare, i, j)
+        i= round((i + 0.0001), 4)
+
+    #i =round (-59.9492, 4)
