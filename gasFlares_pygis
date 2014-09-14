@@ -1,20 +1,22 @@
 flare = qgis.utils.iface.activeLayer()
+import numpy as np
+import decimal 
+
 #flare.featureCount()
-i =round (-62.3600, 4)
-j =round (-5.3600, 4)
+i01 =round (-6.3600, 4)
+i02 = round (-55.0000,4)
+j01 =round (-5.3600, 4)
+j02 = round (-3.0000,4)
 
 def coorF(point, raster):
     return flare.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
      #print (res.results(), i, j)
-
-
-while i :
-    coord_flare = coorF(QgsPoint(i, j), flare)
-    i= round((i+ 0.0001), 4)
-    #print (coord_flare, i, j)
-    if coord_flare != 0.0 : continue
-    print coord_flare,i,j
-else:
-    print ("END")
+for i in np.arange (-60, -55, 0.0001):
+    for j in np.arange (-5 ,-3, 0.0001):
+        coord_flare = coorF(QgsPoint(i, j), flare)
+        #if coord_flare != 0.0 : continue
+        print coord_flare,i,j
+        else:
+            print ("END")
    
    
