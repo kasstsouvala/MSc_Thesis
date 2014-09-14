@@ -12,12 +12,12 @@ def coorF(point, raster):
     return flare.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
      #print (res.results(), i, j)
      
-for i in np.arange (round(-60.00, 4),round( -59.00,  4), round(0.0001, 4)):
-    for j in np.arange (round(-5.00, 4) ,round(-4.0, 4), round(0.0001, 4)):
+for i in np.arange (round(-60.00, 4),round( -59.00,  4), round(0.1, 4)):
+    for j in np.arange (round(-5.00, 4) ,round(-4.0, 4), round(0.1, 4)):
         coord_flare = coorF(QgsPoint(round(i, 4), round(j,4)), flare)
-        if coord_flare != 0.0 : 
+        if coord_flare != [0.0] : 
             print (coord_flare, round(i,4),round(j,4))
         else:
-            print ("zero", i, j)
+            print ("zero!",round(i,4),round(j,4))
    
    
