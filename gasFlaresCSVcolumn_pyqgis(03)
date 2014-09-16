@@ -23,6 +23,7 @@ range_j = int(round(((5.00- 3.0)/0.1)))
 #range_ij = int(5.00)*((60.00) - 59.80)/0.1)))
 #for n in range(0, 10):
 c = csv.writer(open("C:\Users\Kassiani\WWU\Master_Thesis\Data\MYFILE.csv", "wb"),  delimiter=',' , lineterminator="\n")#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
+#b = csv.writer(open("C:\Users\Kassiani\WWU\Master_Thesis\Data\MYFILE.csv", "w"))#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
 
 for i in np.arange (int(-60.00),int( -57.00)):
     #n += 1
@@ -32,7 +33,7 @@ for i in np.arange (int(-60.00),int( -57.00)):
         #for n in range(0, len(l)):#len(l)
         l.extend([coord_flare])
         #l.split()
-        jj.extend([round(j, 4)])
+        ii.extend([round(j, 4)])
         #ii.append([round(i, 4)])
         #k = int(round(((5.00- 4.0)/0.1)*((60.00 - 59.80)/0.1))) +2
         #c.writerow(l[k])
@@ -42,13 +43,18 @@ for i in np.arange (int(-60.00),int( -57.00)):
 for t in range(0, len(l)):
     #for n in range(range_j+1):
     #c = csv.writer(open("C:\Users\Kassiani\WWU\Master_Thesis\Data\MYFILE.csv", "wb"), delimiter=',' , lineterminator="\n")#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
-    c.writerow(l[t])
+    #c.writerow("hh")
+    #b.writerow("Value")
+    #b.writerow("\n")
+    c.writerow([l[t], i, j])
+    print (l[t])
+    #c.writerow(ii[t])
     #c.writer("\n")#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
 
     #c.writerow(range(len(l)))
     #c.writerow('abc','l')
     #c.writerow(range(1,1))
-    print (l[t])
+   
 
             #c.writerow(jj[n])
             #c.writerow(ii[n])
