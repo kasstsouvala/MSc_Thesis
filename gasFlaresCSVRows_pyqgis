@@ -1,0 +1,60 @@
+flare = qgis.utils.iface.activeLayer()
+import numpy as np
+import decimal
+import csv
+import array
+import sys
+
+def coorF(point, raster):
+    return flare.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
+
+coord_i = []
+coord_j = []
+n = 0
+table = []
+l = []
+jj = []
+ii = []
+l = []
+range_i = int(round((60.00- 59.80)/0.1))
+range_j = int(round(((5.00- 4.0)/0.1)))
+#int(round((60.00- 59.80)/0.1))
+#int(round(((5.00- 4.0)/0.1)))
+#range_ij = int(5.00)*((60.00) - 59.80)/0.1)))
+#for n in range(0, 10):
+for i in np.arange (int(-60.00),int( -57.00)):
+    #n += 1
+    for j in np.arange (int(-5.00) ,int(-2.0)) :
+        coord_flare = coorF(QgsPoint(round(i, 4), round(j,4)), flare)
+        c = csv.writer(open("C:\Users\Kassiani\WWU\Master_Thesis\Data\MYFILE.csv", "wb"), delimiter=' ') #, delimiter=' '
+        #for n in range(0, len(l)):#len(l)
+        l.extend([coord_flare])
+        #l.split()
+        jj.extend([round(j, 4)])
+        #ii.append([round(i, 4)])
+        #k = int(round(((5.00- 4.0)/0.1)*((60.00 - 59.80)/0.1))) +2
+        #c.writerow(l[k])
+        print (l)
+       # print (jj)
+
+for n in range(0, len(l)):
+    #for n in range(range_j+1):
+    c = csv.writer(open("C:\Users\Kassiani\WWU\Master_Thesis\Data\MYFILE.csv", "wb") , delimiter=',' , lineterminator="\n")#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
+    c.writerow(l)
+    #c.writerow(range(len(l)))
+    #c.writerow('abc','l')
+    #c.writerow(range(1,1))
+    print (l[n])
+
+            #c.writerow(jj[n])
+            #c.writerow(ii[n])
+            #print (l[n])
+            #print(jj[n])
+            #c.writerow(ii) 
+            #c.writerow(jj)
+           
+   
+            #c.writerow([table[n]])
+      #table.append([coord_flare])
+    #c.writerow(["coord",table[n])
+
