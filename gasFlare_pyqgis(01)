@@ -1,0 +1,35 @@
+flare = qgis.utils.iface.activeLayer()
+import numpy as np
+import decimal
+import csv
+import array
+import sys
+
+#Raster details
+flare.width(), flare.height()
+flare.extent()
+flare.bandCount()
+
+def coorF(point, raster):
+    return flare.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
+
+jj = []
+ii = []
+l = []
+
+c= csv.writer(open("C:\User\...\...\Master_Thesis\Data\MYFILE.csv", "wb"),  delimiter=',' , lineterminator="\n")#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
+c.writerow(['Value','Longitude', 'Latitude'])
+
+
+for i in np.arange ((-65.4583791499999990),(-36.8095), 0.0097424): # -65, -43
+    for j in np.arange ((-2.8139399032281602) ,(-11.5421), -0.00806756) : # -18, -17
+        coord_flare = coorF(QgsPoint(round(i, 4), round(j,4)), flare)
+        if (coord_flare != [0.0]) : 
+            if coord_flare is not None : 
+                l.extend(coord_flare)
+                ii.extend([i])
+                jj.extend([j])
+
+for t in range(len(l)):
+    c.writerow([l[t], ii[t], jj[t]])
+    print (l[t], ii[t], jj[t])
