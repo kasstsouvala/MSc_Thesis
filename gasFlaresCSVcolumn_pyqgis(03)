@@ -7,6 +7,10 @@ import sys
 
 def coorF(point, raster):
     return flare.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
+    
+#Raster details
+flare.width(), flare.height()
+flare.extent()
 
 coord_i = []
 coord_j = []
