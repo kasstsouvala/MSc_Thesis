@@ -29,7 +29,12 @@ from Gas_flares_dialog import GasFlaresDialog
 import os.path
 from qgis.core import QgsMapLayer
 from qgis.core import QgsMapLayerRegistry
+
 import sys
+import numpy as np
+import decimal
+import csv
+import array
 
 class GasFlares:
     """QGIS Plugin Implementation."""
@@ -186,16 +191,51 @@ class GasFlares:
 
         layers = QgsMapLayerRegistry.instance().mapLayers().values()
         for layer in layers:
-            if layer.type() == QgsMapLayer.VectorLayer:
+            if layer.type() == QgsMapLayer.RasterLayer:
                 self.dlg.comboBoxRasterLayer.addItem(layer.name(), layer )
  
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
         if result == 1:
-            index = self.dlg.comboBoxRasterLayer.currentIndex()
-            layer = self.dlg.comboBoxRasterLayer.itemData(index)
-            QMessageBox.information(self.iface.mainWindow(),"hello world","%s has %d features." %(layer.name(),layer.featureCount()))
+            #Get the values from the dialog:
+            Lonfrom = self.dlg.doubleSpinBoxLonfrom.value()
+            Lonto = self.dlg.doubleSpinBoxLonto.value()
+            Latfrom = self.dlg.doubleSpinBoxLanfrom.value()
+            Latto = self.dlg.doubleSpinBoxLanto.value()
+
+            Novalue = self.dlg.doubleSpinBoxValue.value()
+            cellx = self.dlg.doubleSpinBoxSizex.value()
+            celly = self.dlg.doubleSpinBoxSizey.value()
+
+            save = self.dlg.lineEditSave.text()
+
+            def coorF(point, raster):
+                return layer.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
+
+            jj = []
+            ii = []
+            l = []
+            c= csv.writer(open(save, "wb"),  delimiter=',' , lineterminator="\n")#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
+            c.writerow(['Value','Longitude', 'Latitude'])
+            for i in np.arange ((Lonfrom),(Lonto), cellx):
+                for j in np.arange ((Latfrom) ,(Latto), celly):
+                    coord_flare = coorF(QgsPoint(round(i, 4), round(j,4)), flare)
+                    if (coord_flare != [0.0]):
+                         if coord_flare is not None:
+                             l.extend(coord_flare)
+                             ii.extend([i])
+                             jj.extend([j])
+
+
+            for t in range(len(l)):
+                c.writerow([l[t], ii[t], jj[t]])
+                    
+
+
+
+            
+            #QMessageBox.information(self.iface.mainWindow(),"hello world","%s has %d features." %(layer.name(),layer.featureCount()))
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
