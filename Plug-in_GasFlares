@@ -30,11 +30,19 @@ import os.path
 from qgis.core import QgsMapLayer
 from qgis.core import QgsMapLayerRegistry
 
+from qgis.gui import QgsVertexMarker
+from PyQt4.QtCore import *
 import sys
 import numpy as np
 import decimal
 import csv
 import array
+
+from qgis.core import *
+from qgis.gui import *
+from qgis.utils import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 class GasFlares:
     """QGIS Plugin Implementation."""
@@ -183,7 +191,6 @@ class GasFlares:
                 action)
             self.iface.removeToolBarIcon(action)
 
-
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
@@ -193,9 +200,12 @@ class GasFlares:
         for layer in layers:
             if layer.type() == QgsMapLayer.RasterLayer:
                 self.dlg.comboBoxRasterLayer.addItem(layer.name(), layer )
+
  
         # Run the dialog event loop
         result = self.dlg.exec_()
+
+        
         # See if OK was pressed
         if result == 1:
             #Get the values from the dialog:
@@ -209,18 +219,24 @@ class GasFlares:
             celly = self.dlg.doubleSpinBoxSizey.value()
 
             save = self.dlg.lineEditSave.text()
+            
+            #call the selected layer:
+            index = self.dlg.comboBoxRasterLayer.currentIndex()
+            layerA = self.dlg.comboBoxRasterLayer.itemData(index)
 
             def coorF(point, raster):
-                return layer.dataProvider().identify(QgsPoint(i,j), QgsRaster.IdentifyFormatValue).results().values()
+                return layerA.dataProvider().identify(QgsPoint(i,j),QgsRaster.IdentifyFormatValue).results().values()
 
             jj = []
             ii = []
             l = []
+            
             c= csv.writer(open(save, "wb"),  delimiter=',' , lineterminator="\n")#, sys.stdout, lineterminator='\n') #lineterminator='\n' OR , delimiter=','
             c.writerow(['Value','Longitude', 'Latitude'])
-            for i in np.arange ((Lonfrom),(Lonto), cellx):
-                for j in np.arange ((Latfrom) ,(Latto), celly):
-                    coord_flare = coorF(QgsPoint(round(i, 4), round(j,4)), flare)
+            
+            for i in np.arange (Lonfrom,Lonto, cellx):
+                for j in np.arange (Latfrom ,Latto, celly):
+                    coord_flare = coorF(QgsPoint(round(i, 4), round(j,4)), layerA)
                     if (coord_flare != [0.0]):
                          if coord_flare is not None:
                              l.extend(coord_flare)
