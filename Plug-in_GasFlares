@@ -237,7 +237,7 @@ class GasFlares:
             for i in np.arange (Lonfrom,Lonto, cellx):
                 for j in np.arange (Latfrom ,Latto, celly):
                     coord_flare = coorF(QgsPoint(round(i, 4), round(j,4)), layerA)
-                    if (coord_flare != [0.0]):
+                    if (coord_flare != [Novalue]):
                          if coord_flare is not None:
                              l.extend(coord_flare)
                              ii.extend([i])
@@ -255,3 +255,4 @@ class GasFlares:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
+
