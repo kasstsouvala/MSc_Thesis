@@ -3,7 +3,7 @@
 ##############
 #Get the data#
 ##############
-setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\DMSP\\DMSP_SIRGA2000\\DMSP_Amazonia_SIRGAS2000\\DMSP_F142000_SIRGAS2000\\Clusters")
+setwd("C:\\....\\Data\\DMSP\\DMSP_SIRGA2000\\DMSP_Amazonia_SIRGAS2000\\DMSP_F142000_SIRGAS2000\\Clusters")
 k.data1<-read.table("DMSPF142000_ShpTable(LonLat).csv", sep=",", header=T)#Lon, Lat
 k.data2<-read.table("DMSPF142000_ShpTable(LonLatVal).csv", sep=",", header=T)#Lon, Lat, Values
 head(k.data1)
