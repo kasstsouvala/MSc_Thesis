@@ -1,0 +1,126 @@
+#Script description: k-means clustering of DMSP lights (1.Find the k using 2 ways, 2.Find the k-means clusters)
+
+##############
+#Get the data#
+##############
+setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\DMSP\\DMSP_SIRGA2000\\DMSP_Amazonia_SIRGAS2000\\DMSP_F142000_SIRGAS2000\\Clusters")
+k.data1<-read.table("DMSPF142000_ShpTable(LonLat).csv", sep=",", header=T)#Lon, Lat
+k.data2<-read.table("DMSPF142000_ShpTable(LonLatVal).csv", sep=",", header=T)#Lon, Lat, Values
+head(k.data1)
+head(k.data2)
+
+#Plot the data
+op = par(bg = "#DDE3CA")
+plot(k.data1)
+#3D scatterplot of the three variables
+library(scatterplot3d)
+scatterplot3d((k.data2$Lon), (k.data2$meanVal),
+              (k.data2$Lat),angle = 25,
+              xlab = "Lon", ylab = "Lat",
+              zlab = "DN")
+
+###############################
+#Find k for k means clustering#
+###############################
+#http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters
+
+#--1--#
+#A Handbook of Statistical Analysis using R
+#http://cran.r-project.org/web/packages/HSAUR2/vignettes/Ch_cluster_analysis.pdf
+op = par(bg = "#DDE3CA")
+wss <- (nrow(k.data1)-1)*sum(apply(k.data1,2,var))
+for (i in 2:10) wss[i] <- sum(kmeans(k.data1,centers=i)$withinss)
+plot(1:10, col = "#487AA1",wss, type="b", xlab="Number of Clusters",ylab="Within groups sum of squares", main = "Within-cluster sum of squares for different numbers \n of clusters for DMSP data")
+
+#--2--#
+#R Cookbook, page(350/419)
+d<-dist(k.data1)
+hc<-hclust(d)
+#Plot dendrogram
+op = par(bg = "#DDE3CA")
+#plot(hc)
+plot(hc, col = "#487AA1", hang = -1, main = "(Dendrogram) \n Hierarchical clustering of DMSP Data") #hang = -1 put the labels at the same level
+# install.packages('sparcl')
+library(sparcl)
+# colors the leaves of a dendrogram
+y = cutree(hc, 6)
+ColorDendrogram(hc, y = y, labels = names(y), main = "(Dendrogram) \n Hierarchical clustering of DMSP Data", branchlength = 4)
+
+#--Not used--[
+#double "##" are the not used commands
+# add axis
+#axis(side = 2, at = seq(0, 30, 1), col = "#F38630", labels = FALSE, lwd = 2)
+# plot dendrogram with some cuts
+##hcd = as.dendrogram(hc)
+#op = par(mfrow = c(2, 1))
+##plot(cut(hcd, h = 5)$upper, main = "Upper tree of cut at h=7")
+##plot(cut(hcd, h = 5)$lower[[2]], main = "Second branch of lower tree with cut at h=7")
+
+# load package ape
+##library(ape)
+# plot basic tree
+##plot(as.phylo(hc), cex = 0.9, label.offset = 1)
+
+# unrooted
+##plot(as.phylo(hc), type = "unrooted")
+
+# fan
+##plot(as.phylo(hc), type = "fan", label.offset = 1, cex = log(k.data2$meanVal, 150))
+#--Not used--]
+
+
+####################
+#k means clustering#
+####################
+#Data
+k.data1<-read.table("DMSPF142000_ShpTable(LonLat).csv", sep=",", header=T)#Lon, Lat
+
+#Do k-means clustering
+k.data1.means<-kmeans(k.data1, centers=6) #"centers" is the number of clusters k
+
+#compute the mean value of each statistical cluster
+k.data2<-read.table("DMSPF142000_ShpTable(LonLatVal).csv", sep=",", header=T)#csv with mean values
+tapply(k.data2$meanVal, k.data1.means$cluster, mean)
+
+#The centers of the clusters
+ccent<- function(cl){
+  f<-function(i) colMeans(k.data2[cl == i,])
+  x<-sapply(sort(unique(cl)), f)
+}
+centers<-ccent(k.data1.means$cluster)
+centers
+
+#Show the centers
+k.data1.means$centers
+
+#Show the clusters
+k.data1.means$cluster
+head(k.data1)
+
+#Plot the groups
+op = par(bg = "#DDE3CA")
+plot(k.data1[k.data1.means$cluster ==1, ], 
+     col ="red",
+     xlim=c(min(k.data1[,1]), max(k.data1[,1])),
+     ylim=c(min(k.data1[,2]), max(k.data1[,2])), 
+     main="DMSP lights (k-means clusering)", 
+     xlab = "Longitude (Decimal degrees)",
+     ylab = "Latitude (Decimal degrees)"
+     )
+points(k.data1[k.data1.means$cluster == 2, ], col = "darkgreen")
+points(k.data1[k.data1.means$cluster == 3, ], col = "seagreen")
+points(k.data1[k.data1.means$cluster == 4, ], col = "orange")
+points(k.data1[k.data1.means$cluster == 5, ], col = "brown")
+points(k.data1[k.data1.means$cluster == 6, ], col = "darkblue")
+#points(k.data1[k.data1.means$cluster == 7, ], col = "blue")
+#points(k.data1[k.data1.means$cluster == 8, ], col = "lightgreen")
+points(k.data1.means$centers, pch=3, col="black",cex = 1.8)
+
+#Add the new clusters column
+k.data1$clusters<-c(k.data1.means$cluster)
+head(k.data1)
+
+#Save as .csv
+write.table(k.data1, file = "F142000_kmeans.csv",row.names=FALSE, na="",col.names=TRUE, sep=",")
+
+
