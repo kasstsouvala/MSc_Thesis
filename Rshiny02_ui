@@ -1,0 +1,30 @@
+library(shiny)
+library(devtools)
+
+
+shinyUI(fluidPage(
+  titlePanel("DMSP nighttime images"),
+  
+  sidebarLayout(
+    sidebarPanel(
+ 
+      checkboxInput(inputId = "s1",
+                    label = strong("F142000"),
+                    value = TRUE),
+      checkboxInput(inputId = "s2",
+                    label = strong("F152000"),
+                    value = TRUE),
+      
+      
+      img(src = "C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Scripts\\Rscripts\\Rshiny\\Rshiny_AppEx\\AmazonBrazil.png", height = 72, width = 72),
+      "Investigation area: ",
+      span("Amazon", style = "color:blue")
+    ),
+    
+    mainPanel(
+      h3("Before satellite calibration", style = "color:grey"),
+      plotOutput(outputId ="plot", height = "400px")
+      #plotOutput("main_plot")
+    )
+  )
+))
