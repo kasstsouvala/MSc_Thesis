@@ -1,0 +1,43 @@
+library(shiny)
+data=read.csv("am.csv", sep=",", header=T)
+Longitude<-data$Longitude
+Latitude<-data$Latitude
+
+data1=read.csv("amtr.csv", sep=",", header=T)
+xs1<-data1$Longitude
+ys1<-data1$Latitude
+
+data2=read.csv("amt.csv", sep=",", header=T)
+xs2<-data2$Longitude
+ys2<-data2$Latitude
+
+# Define server logic required to draw a histogram
+shinyServer(
+  function(input, output) {
+   
+    output$plot <- renderPlot({
+      
+      plot(Longitude, Latitude,xlab="Longitude",ylab="Latitude")
+      lines(Longitude, Longitude, col="red")+lines(Longitude, Longitude, col="red")
+      #plot(Longitude, Latitude,xlab="Longitude",ylab="Latitude")
+      #plot(input$Satellites, xlim= c(0,9), ylim=c(0,9))
+      if (input$s1){
+        plot(xs1, ys1)
+        lines(Longitude, Longitude, col="red")+lines(Longitude, Longitude, col="blue")
+      }
+      
+      if (input$s2 && input$s1){
+        plot(xs2, ys2, col = "green")+plot(xs1, ys1, col = "red")
+        lines(xs2, ys2, col="green")+lines(Longitude, Longitude, col="green")
+        lines(xs1, ys1, col="red")+lines(Longitude, Longitude, col="red")
+      }
+      
+      
+      })
+      #renderPlot({
+      #plot(F142000X, F142000Y)
+    #})
+
+
+}
+)
