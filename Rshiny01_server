@@ -1,0 +1,21 @@
+library(shiny)
+
+# Define server logic required to draw a histogram
+shinyServer(
+  function(input, output) {
+    output$plot <- reactivePlot(function() {
+      data=read.csv(input$Satellites, sep=",", header=T)
+      Longitude<-data$Longitude
+      Latitude<-data$Latitude
+      
+      plot(Longitude, Latitude,xlab="Longitude",ylab="Latitude")
+      lines(Longitude, Longitude, col="red")
+      #plot(input$Satellites, xlim= c(0,9), ylim=c(0,9))
+    })
+      #renderPlot({
+      #plot(F142000X, F142000Y)
+    #})
+
+
+}
+)
