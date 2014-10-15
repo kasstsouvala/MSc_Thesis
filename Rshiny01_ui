@@ -1,0 +1,31 @@
+library(shiny)
+library(devtools)
+
+
+shinyUI(fluidPage(
+  titlePanel("DMSP nighttime images"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput("Satellites", 
+                         label=h4("Satellites:"),
+                         choices = list("F142000"="am.csv", 
+                                        "F152000"="am.csv", 
+                                        "F142001"="GasFlares_AmazoniaClip.csv"),
+                         selected = "am.csv"
+                         ),
+                         
+      
+      
+      img(src = "C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Scripts\\Rscripts\\Rshiny\\Rshiny_AppEx\\DMSP_F152000.png", height = 72, width = 72),
+      "Investigation area: ",
+      span("Amazon", style = "color:blue")
+    ),
+    
+    mainPanel(
+      h3("Before satellite calibration", style = "color:grey"),
+      plotOutput("plot", height = "400px")
+      #plotOutput("main_plot")
+    )
+  )
+))
