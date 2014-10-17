@@ -28,17 +28,18 @@ shinyServer(
    
     output$plot <- renderPlot({
       
-      plot(Longitude, Latitude, col = "red", type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+      plot(Longitude, Latitude, col = "red", type = "l", xlim= c(1999,2011), ylim=c(7,14),xlab="years",ylab="Average DN values",cex.lab=1.5,cex.axis = 1.3)
       
       if (input$sAll){
-      plot(data14, col = "red", type = "o", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
-      lines(data16, type = "o", col = "brown", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
-      lines(data15, type = "o", col = "blue", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
-      lines(data18, type = "o", col = "brown", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
-      #plot(data14, type="l",xlab="years",ylab="Average DN values", xlim= c(1999,2011), ylim=c(6,14))
-      #lines(Longitude, Longitude, col="red")+lines(Longitude, Longitude, col="red")
-      #plot(Longitude, Latitude,xlab="Longitude",ylab="Latitude")
-      #plot(input$Satellites, xlim= c(0,9), ylim=c(0,9))
+      plot(data14, col = "red", type = "o", xlim= c(1999,2011), ylim=c(7,14),xlab="years",ylab="Average DN values",cex.lab=1.5,cex.axis = 1.3, cex=1.35)
+      lines(data16, type = "o", col = "darkgreen", xlim= c(1999,2011), ylim=c(7,14),xlab="years",ylab="Average DN values",cex.lab=1.5,cex.axis = 1.8,cex=1.35)
+      lines(data15, type = "o", col = "blue", xlim= c(1999,2011), ylim=c(7,14),xlab="years",ylab="Average DN values",cex.lab=1.5,cex.axis = 1.3,cex=1.35)
+      lines(data18, type = "o", col = "brown", xlim= c(1999,2011), ylim=c(7,14),xlab="years",ylab="Average DN values",cex.lab=1.5,cex.axis = 1.3,cex=1.35)
+      
+      legend('bottomright', c("F14","F15","F16","F18") , 
+             lty=1, col=c('red', 'darkgreen', 'blue',' brown'), bty='n', cex=1.15, pch=1)
+      #legend(1.5, 2.4, c("setosa","versicolor","virginica"), pch=1:3)....., 'topright'
+      
       }
       if (input$s14){
         plot(data14, col = "red", type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
