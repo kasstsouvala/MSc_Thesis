@@ -2,28 +2,25 @@ library(shiny)
 library(graphics)
 shinyUI(fluidPage(
   titlePanel("DMSP nighttime images"),
-  
+  #tags$style("body {background-color: whitesmoke;}"),#beige
   sidebarLayout(
-    sidebarPanel(
+    sidebarPanel(#width = 4,
       h4("No calibrated:"),
       checkboxInput(inputId = "sAll",
-                    label = strong("No calibration"),
+                    label = strong("Average DN values"),
+                    value = TRUE),
+      #h4("Calibrated:"),
+      checkboxInput(inputId = "sAlltotal",
+                    label = strong("Total lit pixels"),
                     value = TRUE),
       h4("Calibrated:"),
-      checkboxInput(inputId = "s14",
-                    label = strong("Calibration"),
+      checkboxInput(inputId = "sAlltotal",
+                    label = strong("Average DN values"),
                     value = TRUE),
-      # checkboxInput(inputId = "s15",
-      #              label = strong("F15"),
-      #               value = TRUE),
-      # checkboxInput(inputId = "s16",
-      #              label = strong("F16"),
-      #               value = TRUE),
-      # checkboxInput(inputId = "s18",
-      #              label = strong("F18"),
-      #              value = TRUE),
-    
-      
+      checkboxInput(inputId = "sAlltotal",
+                    label = strong("Total lit pixels"),
+                    value = TRUE),
+
       img(src = "C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Scripts\\Rscripts\\Rshiny\\Rshiny_AppEx\\AmazonBrazil.png", height = 72, width = 72),
       "Investigation area: ",
       span("Amazon", style = "color:blue")
@@ -31,8 +28,11 @@ shinyUI(fluidPage(
     
     mainPanel(
       #h3("Before satellite calibration", style = "color:grey"),
-      plotOutput(outputId ="plot", height = "400px")
+      plotOutput(outputId ="plot", height = "400px", width="600px")
+      #,
       #plotOutput("main_plot")
+      #h4("Summary"),
+      #verbatimTextOutput("summary")
     )
   )
 ))
