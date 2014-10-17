@@ -1,0 +1,113 @@
+library(shiny)
+library(graphics)
+
+data=read.csv("am.csv", sep=",", header=T)
+Longitude<-data$Longitude
+Latitude<-data$Latitude
+
+data14=read.csv("Average_F14.csv", sep=",", header=T)
+xs14<-data14$year
+ys14<-data14$average
+
+data15=read.csv("Average_F15.csv", sep=",", header=T)
+xs15<-data15$year
+ys15<-data15$average
+
+data16=read.csv("Average_F16.csv", sep=",", header=T)
+xs16<-data16$year
+ys16<-data16$average
+
+data18=read.csv("Average_F18.csv", sep=",", header=T)
+xs18<-data18$year
+ys18<-data18$average
+
+
+# Define server logic required to draw a histogram
+shinyServer(
+  function(input, output) {
+   
+    output$plot <- renderPlot({
+      
+      plot(Longitude, Latitude, col = "red", type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+      
+      if (input$sAll){
+      plot(data14, col = "red", type = "o", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+      lines(data16, type = "o", col = "brown", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+      lines(data15, type = "o", col = "blue", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+      lines(data18, type = "o", col = "brown", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+      #plot(data14, type="l",xlab="years",ylab="Average DN values", xlim= c(1999,2011), ylim=c(6,14))
+      #lines(Longitude, Longitude, col="red")+lines(Longitude, Longitude, col="red")
+      #plot(Longitude, Latitude,xlab="Longitude",ylab="Latitude")
+      #plot(input$Satellites, xlim= c(0,9), ylim=c(0,9))
+      }
+      if (input$s14){
+        plot(data14, col = "red", type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #plot(data14, type="l",xlab="years",ylab="Average DN values", xlim= c(1999,2011), ylim=c(6,14))
+        #lines(Longitude, Longitude, col="red")+lines(Longitude, Longitude, col="red")
+        #plot(Longitude, Latitude,xlab="Longitude",ylab="Latitude")
+        #plot(input$Satellites, xlim= c(0,9), ylim=c(0,9))
+      }
+#      if (input$s14){
+        #points(xs142000, ys142000, type = "l")
+#        plot(xs14, ys14, col = "red",type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs142000, ys142000, col="red")
+#      }    
+#      if (input$s15){
+        #points(xs152000, ys152000, type = "l")
+#        plot(xs15, ys15, col = "blue",type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs152000, ys152000, col="red")+lines(Longitude, Longitude, col="blue")
+#      }
+#      if (input$s16){
+        #points(xs142001, ys142001, type = "l")
+#        lines(xs16, ys16, col = "darkgreen", type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs142001, ys142001, col="red")+lines(Longitude, Longitude, col="blue")
+#       }
+#      if (input$s18){
+        #points(xs152001, ys152001, type = "l")
+#        lines(xs18, ys18, col = "brown",type = "l", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs152001, ys152001, col="red")+lines(Longitude, Longitude, col="blue")
+#      }
+
+      
+
+      
+      
+#       if (input$s14 && input$s15 ){
+#         plot(xs14, ys14, type = "l",  col = "red", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+#         lines(xs15, ys15, type = "l", col = "blue", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")#, xlim=c(2000, 2010), ylim=c(6, 14))
+        #lines(xs152000, ys152000, col="red")+lines(Longitude, Longitude, col="blue")
+#       }  
+      
+#       if (input$s15 && input$s16 ){
+#         plot(xs15, ys15, type = "l",  col = "blue", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+#         lines(xs16, ys16, type = "l", col = "green", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs152000, ys152000, col="red")+lines(Longitude, Longitude, col="blue")
+#       } 
+      
+
+#       if (input$s14 && input$s16){
+#         plot(xs14, ys14, type = "l", col = "red", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+#         lines(xs16, ys16, type = "l", col = "green", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs152000, ys152000, col="red")+lines(Longitude, Longitude, col="blue")
+#       } 
+#       if (input$s14 && input$s18){
+#         plot(xs14, ys14, type = "l", col = ("red"), xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+#         lines(xs18, ys18, type = "l", col = "brown", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs152000, ys152000, col="red")+lines(Longitude, Longitude, col="blue")
+#       }   
+
+      
+#       if (input$s16 && input$s18){
+#         plot(xs16, ys16, type = "l", col = "darkgreen", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+#         lines(xs18, ys18, type = "l", col = "brown", xlim= c(1999,2011), ylim=c(6,14),xlab="years",ylab="Average DN values")
+        #lines(xs152000, ys152000, col="red")+lines(Longitude, Longitude, col="blue")
+#       }
+      
+      })
+      #renderPlot({
+      #plot(F142000X, F142000Y)
+    #})
+
+
+}
+)
