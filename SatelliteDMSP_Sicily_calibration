@@ -1,0 +1,267 @@
+##########
+#-Sicily-#
+##########
+
+#-------------#
+#-Insert data-#
+#-------------#
+setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\Italy\\Sicily_clip\\Sicily_values")
+
+F121999<-read.table("Sicily_DMSPclip_F121999.csv", sep=",", header=T)
+F141999<- read.table("Sicily_DMSPclip_F141999.csv", sep=",", header=T)
+
+F142000<- read.table("Sicily_DMSPclip_F142000.csv", sep=",", header=T)
+F152000<- read.table("Sicily_DMSPclip_F152000.csv", sep=",", header=T)
+
+F142001<- read.table("Sicily_DMSPclip_F142001.csv", sep=",", header=T)
+F152001<- read.table("Sicily_DMSPclip_F152001.csv", sep=",", header=T)
+
+F142002<- read.table("Sicily_DMSPclip_F142002.csv", sep=",", header=T)
+F152002<- read.table("Sicily_DMSPclip_F152002.csv", sep=",", header=T)
+
+F142003<- read.table("Sicily_DMSPclip_F142003.csv", sep=",", header=T)
+F152003<- read.table("Sicily_DMSPclip_F152003.csv", sep=",", header=T)
+
+F152004<- read.table("Sicily_DMSPclip_F152004.csv", sep=",", header=T)
+F162004<- read.table("Sicily_DMSPclip_F162004.csv", sep=",", header=T)
+
+F152005<- read.table("Sicily_DMSPclip_F152005.csv", sep=",", header=T)
+F162005<- read.table("Sicily_DMSPclip_F162005.csv", sep=",", header=T)
+
+F152006<- read.table("Sicily_DMSPclip_F152006.csv", sep=",", header=T)
+F162006<- read.table("Sicily_DMSPclip_F162006.csv", sep=",", header=T)
+
+F152007<- read.table("Sicily_DMSPclip_F152007.csv", sep=",", header=T)
+F162007<- read.table("Sicily_DMSPclip_F162007.csv", sep=",", header=T)
+
+F162008<- read.table("Sicily_DMSPclip_F162008.csv", sep=",", header=T)
+
+F162009<- read.table("Sicily_DMSPclip_F162009.csv", sep=",", header=T)
+
+F182010<- read.table("Sicily_DMSPclip_F182010.csv", sep=",", header=T)
+
+
+#----------------------------------#
+#1. Corelation                     #
+#2. Plot                           #
+#3. Secon order polynomial analysis#
+#----------------------------------#
+op = par(bg = "#DDE3CA")
+#-1999-#
+cor(F141999$Value, F121999$Value)
+plot(F141999$Value, F121999$Value,xlab="F141999 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")#olivedrab4, darkolivegreen4, deepskyblue3, dodgerblue4
+#Second order polynomial analysis
+#lines(lowess(F141999$Value~F121999$Value), col="blue")
+#abline((F141999$Value~F121999$Value), col="blue")
+m2<-lm(F141999$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F141999$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+lines(lowess(F141999$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+
+#-2000-#
+cor(F142000$Value, F121999$Value)
+plot(F142000$Value, F121999$Value,xlab="F142000 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F142000$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F142000$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+lines(lowess(F142000$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+
+cor(F152000$Value, F121999$Value)
+plot(F152000$Value, F121999$Value,xlab="F152000 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152000$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152000$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152000$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2001-#
+cor(F142001$Value, F121999$Value)
+plot(F142001$Value, F121999$Value,xlab="F142001 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F142001$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F142001$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F142001$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+cor(F152001$Value, F121999$Value)
+plot(F152001$Value, F121999$Value,xlab="F152001 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152001$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152001$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152001$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2002-#
+cor(F142002$Value, F121999$Value)
+plot(F142002$Value, F121999$Value,xlab="F142002 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F142002$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F142002$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F142002$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+cor(F152002$Value, F121999$Value)
+plot(F152002$Value, F121999$Value,xlab="F152002 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152002$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152002$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152002$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2003-#
+cor(F142003$Value, F121999$Value)
+plot(F142003$Value, F121999$Value,xlab="F142003 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F142003$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F142003$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F142003$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+cor(F152003$Value, F121999$Value)
+plot(F152003$Value, F121999$Value,xlab="F152003 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152003$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152003$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152003$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2004-#
+cor(F152004$Value, F121999$Value)
+plot(F152004$Value, F121999$Value,xlab="F152004 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152004$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152004$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152004$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+cor(F162004$Value, F121999$Value)
+plot(F162004$Value, F121999$Value,xlab="F162004 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F162004$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F162004$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F162004$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2005-#
+cor(F152005$Value, F121999$Value)
+plot(F152005$Value, F121999$Value,xlab="F152005 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152005$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152005$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152005$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+cor(F162005$Value, F121999$Value)
+plot(F162005$Value, F121999$Value,xlab="F162005 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F162005$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F162005$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F162005$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2006-#
+cor(F152006$Value, F121999$Value)
+plot(F152006$Value, F121999$Value,xlab="F152006 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152006$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152006$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152006$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+cor(F162006$Value, F121999$Value)
+plot(F162006$Value, F121999$Value,xlab="F162006 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F162006$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F162006$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F162006$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2007-#
+cor(F152007$Value, F121999$Value)
+plot(F152007$Value, F121999$Value,xlab="F152007 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F152007$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F152007$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F152007$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+cor(F162007$Value, F121999$Value)
+plot(F162007$Value, F121999$Value,xlab="F162007 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F162007$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F162007$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F162007$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2008-#
+cor(F162008$Value, F121999$Value)
+plot(F162008$Value, F121999$Value,xlab="F162008 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F162008$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F162008$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F162008$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2009-#
+cor(F162009$Value, F121999$Value)
+plot(F162009$Value, F121999$Value,xlab="F162009 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F162009$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F162009$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F162009$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+#-2010-#
+cor(F182010$Value, F121999$Value)
+plot(F182010$Value, F121999$Value,xlab="F182010 (DN values)",ylab="F121999 (DN values)", main="Correlation of DN values in Sicily",
+     cex.lab=1.0,cex.axis = 0.95, cex=0.9, col.main="darkolivegreen4", col.lab="black")
+m2<-lm(F182010$Value ~ poly(F121999$Value, 2, raw=TRUE), data = data)
+m3<-lm(F182010$Value ~ F121999$Value + I (F121999$Value^2))
+summary(m2)
+summary(m3)
+lines(lowess(F182010$Value~predict(m2)), col="darkgreen", lwd=2)#loess, lowess
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m3)$r.squared, digits=4))) #summary(fit)$adj.r.squared
+
+  
+
+
