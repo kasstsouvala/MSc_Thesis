@@ -1,0 +1,71 @@
+#______________________#
+# Geometric correction #
+#  State of Sao Paulo  #
+#......................#
+#......................#
+# Data are:            #
+# 1.Intercalibrated    #
+# 2. Thresholded (>2.5)#
+#______________________#
+
+
+library(raster)
+library(matrixcalc)
+#library(NetComp)
+#install.packages(c("‘NetComp’"))
+
+op = par(bg = "#DDE3CA")
+setwd("C:\\..........\\SaoPaolo\\SaoPaulo_Calibrated Images\\SaoPaulo_threshold25\\SaoPaulo_Find_Corelation_For_GeometrError_Values\\NoMovment_01\\SaoPaulo_NoShift_SIRGAS2000")
+#________________________________________________________
+#F142001: stable image to compare with all others images
+#________________________________________________________
+F142001 <- raster("SaoPauloF142001.tif")
+length(F142001)
+plot(F142001, main="F142001 (Stable image)")
+
+#http://www.inside-r.org/packages/cran/raster/docs/as.matrix
+F142001_matrix <- as.matrix(F142001)#,  nrow=3, ncol=length(F142001)
+head(F142001_matrix[160:195,185:200])
+head(F142001_matrix)
+#________________________________________________________
+#F142000: IMAGE to be shifted..
+#________________________________________________________
+F142000 <- raster("SaoPauloF142000.tif")
+length(F142000)
+plot(F142000, main="F142000 (Image to be shifted)")
+#As matrix
+F142000_matrix <- as.matrix(F142000)#,  nrow=3, ncol=length(F142001)
+length(F142000)
+
+#Shift the image, library(matrixcalc)
+F142000_shift<-shift.left( F142000_matrix, cols=1, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+                                                             # filling the above rows with the given fill value.
+head(F142000_shift[160:195,185:200], )
+length(F142000_shift)
+
+#Creat arrays
+F142000_shift_Array<-c(F142000_shift)
+F142001_matrixArray<-c(F142001_matrix)
+
+#Same array length
+length(F142000_shift_Array)
+length(F142001_matrixArray)
+
+
+#Omit the NA values from the arrays
+F142000_shift_Array_NA<-na.omit(F142000_shift_Array)
+F142001_matrixArray_NA<-na.omit(F142001_matrixArray)
+
+#Check the arrays length (with no NA values is different)
+length_shift<-length(F142000_shift_Array_NA)
+length_stable<-length(F142001_matrixArray_NA)
+length_shift# longer than the length_stable
+length_stable
+length_shift-length_stable
+nrow(F142001)#stable, not shifted image/ matrix
+#ncol(F142001)
+
+#Coreelation
+cor(F142000_shift_Array_NA[1:length_stable], F142001_matrixArray_NA[1:length_stable])#0.9546395
+
+
