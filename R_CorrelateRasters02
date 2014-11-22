@@ -846,3 +846,370 @@ nrow(F142001)#stable, not shifted image/ matrix
 
 #Correlation
 cor(Imageshift_matrix_shift_Array_NA[1:length_stable], F142001_matrixArray_NA[1:length_stable])
+
+#________________________________________________________
+#--------------------------------------------------------
+#(15) Left 1 pixel, Up 1 pixel
+#--------------------------------------------------------
+#________________________________________________________
+#________________________________________________________
+#Shift: IMAGE to be shifted..
+#________________________________________________________
+Imageshift <- raster("SaoPauloF142000.tif")
+length(Imageshift)
+#plot(Imageshift, main="Image to be shifted")
+#As matrix
+Imageshift_matrix <- as.matrix(Imageshift)#,  nrow=3, ncol=length(F142001)
+length(Imageshift_matrix)
+
+#Reload the stable image as matrix
+F142001<-raster("SaoPauloF142001.tif")
+F142001_matrix <- as.matrix(F142001)#,  nrow=3, ncol=length(F142001)
+length(F142001_matrix)
+
+#________________________________________________________
+#Left 1 pixel, Up 1 pixel
+#________________________________________________________
+#Shift the image, library(matrixcalc)
+Imageshift_matrix_shift01<-shift.left( Imageshift_matrix, cols=1, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+Imageshift_matrix_shift<-shift.up( Imageshift_matrix_shift01, rows=1, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+
+# filling the above rows with the given fill value.
+head(Imageshift_matrix_shift[160:195,185:200])
+
+len<-length(Imageshift_matrix_shift)
+row<-nrow(Imageshift_matrix_shift)
+col<-ncol(Imageshift_matrix_shift)
+len
+row
+col
+y1=row-1
+y2=col-1
+len1=len-1
+
+#Creat arrays
+Imageshift_matrix_shift_Array<-as.vector(Imageshift_matrix_shift[(1:y1),(1:y2)])
+#F142001_matrixArray<-as.vector(F142001_matrix)
+
+#Check array length
+length(Imageshift_matrix_shift_Array)
+#length(F142001_matrixArray)
+y1+y2
+#length(F142001_matrixArray)-length(Imageshift_matrix_shift_Array)-1 # number of values out of the table (ncol + nrow -1), -1 because col and row share the same 1 cell
+
+#Save the stable matrix with same dimensions
+len1<-length(F142001_matrix)
+row1<-nrow(F142001_matrix)
+col1<-ncol(F142001_matrix)
+len1
+row1
+col1
+y2=row1-1
+y3=col1-1
+len2=len1-1
+F142001_matrix <- as.matrix(F142001)
+F142001_matrix<-F142001_matrix[(1:y2),(1:y3)]
+F142001_matrixArray<-as.vector(F142001_matrix)
+length(F142001_matrixArray)
+F142001_matrixArray
+
+#Same array length
+length(Imageshift_matrix_shift_Array)
+length(F142001_matrixArray)
+
+#Omit the NA values from the arrays
+Imageshift_matrix_shift_Array_NA<-na.omit(Imageshift_matrix_shift_Array)
+F142001_matrixArray_NA<-na.omit(F142001_matrixArray)
+
+#Check the arrays length (with no NA values is different)
+length_shift<-length(Imageshift_matrix_shift_Array_NA)
+length_stable<-length(F142001_matrixArray_NA)
+length_shift# longer than the length_stable
+length_stable
+length_shift-length_stable
+nrow(F142001)#stable, not shifted image/ matrix
+#ncol(F142001)
+
+#Correlation
+cor(Imageshift_matrix_shift_Array_NA[1:length_stable], F142001_matrixArray_NA[1:length_stable])
+
+#________________________________________________________
+#--------------------------------------------------------
+#(16) Left 2 pixel, Up 2 pixel
+#--------------------------------------------------------
+#________________________________________________________
+#________________________________________________________
+#Shift: IMAGE to be shifted..
+#________________________________________________________
+Imageshift <- raster("SaoPauloF142000.tif")
+length(Imageshift)
+#plot(Imageshift, main="Image to be shifted")
+#As matrix
+Imageshift_matrix <- as.matrix(Imageshift)#,  nrow=3, ncol=length(F142001)
+length(Imageshift_matrix)
+
+#Reload the stable image as matrix
+F142001<-raster("SaoPauloF142001.tif")
+F142001_matrix <- as.matrix(F142001)#,  nrow=3, ncol=length(F142001)
+length(F142001_matrix)
+
+#________________________________________________________
+#Left 2 pixel, Up 2 pixel
+#________________________________________________________
+#Shift the image, library(matrixcalc)
+Imageshift_matrix_shift01<-shift.left( Imageshift_matrix, cols=2, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+Imageshift_matrix_shift<-shift.up( Imageshift_matrix_shift01, rows=2, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+
+# filling the above rows with the given fill value.
+#head(Imageshift_matrix_shift[160:195,185:200])
+
+len<-length(Imageshift_matrix_shift)
+row<-nrow(Imageshift_matrix_shift)
+col<-ncol(Imageshift_matrix_shift)
+len
+row
+col
+y1=row-2
+y2=col-2
+len1=len-2
+
+#Creat arrays
+Imageshift_matrix_shift_Array<-as.vector(Imageshift_matrix_shift[(1:y1),(1:y2)])
+#F142001_matrixArray<-as.vector(F142001_matrix)
+
+#Check array length
+length(Imageshift_matrix_shift_Array)
+#length(F142001_matrixArray)
+#y1+y2
+#length(F142001_matrixArray)-length(Imageshift_matrix_shift_Array)-1 # number of values out of the table (ncol + nrow -1), -1 because col and row share the same 1 cell
+
+#Save the stable matrix with same dimensions
+len1<-length(F142001_matrix)
+row1<-nrow(F142001_matrix)
+col1<-ncol(F142001_matrix)
+len1
+row1
+col1
+y2=row1-2
+y3=col1-2
+len2=len1-2
+#F142001_matrix <- as.matrix(F142001)
+F142001_matrixArray<-as.vector(F142001_matrix[(1:y2),(1:y3)])
+length(F142001_matrixArray)
+length(Imageshift_matrix_shift_Array)
+
+#Same array length
+length(Imageshift_matrix_shift_Array)
+length(F142001_matrixArray)
+
+#Omit the NA values from the arrays
+Imageshift_matrix_shift_Array_NA<-na.omit(Imageshift_matrix_shift_Array)
+F142001_matrixArray_NA<-na.omit(F142001_matrixArray)
+
+#Check the arrays length (with no NA values is different)
+length_shift<-length(Imageshift_matrix_shift_Array_NA)
+length_stable<-length(F142001_matrixArray_NA)
+length_shift# longer than the length_stable
+length_stable
+length_shift-length_stable
+nrow(F142001)#stable, not shifted image/ matrix
+#ncol(F142001)
+
+#Correlation
+cor(Imageshift_matrix_shift_Array_NA[1:length_shift], F142001_matrixArray_NA[1:length_shift])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#________________________________________________________
+#--------------------------------------------------------
+#(17) Right 1 pixel, Down 1 pixel
+#--------------------------------------------------------
+#________________________________________________________
+#________________________________________________________
+#Shift: IMAGE to be shifted..
+#________________________________________________________
+Imageshift <- raster("SaoPauloF142000.tif")
+length(Imageshift)
+#plot(Imageshift, main="Image to be shifted")
+#As matrix
+Imageshift_matrix <- as.matrix(Imageshift)#,  nrow=3, ncol=length(F142001)
+length(Imageshift_matrix)
+
+#Reload the stable image as matrix
+F142001<-raster("SaoPauloF142001.tif")
+F142001_matrix <- as.matrix(F142001)#,  nrow=3, ncol=length(F142001)
+length(F142001_matrix)
+
+#________________________________________________________
+#Right 1 pixel, Down 1 pixel
+#________________________________________________________
+#Shift the image, library(matrixcalc)
+Imageshift_matrix_shift01<-shift.right( Imageshift_matrix, cols=1, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+Imageshift_matrix_shift<-shift.down( Imageshift_matrix_shift01, rows=1, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+
+# filling the above rows with the given fill value.
+head(Imageshift_matrix_shift[160:195,185:200])
+
+len<-length(Imageshift_matrix_shift)
+row<-nrow(Imageshift_matrix_shift)
+col<-ncol(Imageshift_matrix_shift)
+len
+row
+col
+y1=row-1
+y2=col-1
+len1=len-1
+
+#Creat arrays
+Imageshift_matrix_shift_Array<-as.vector(Imageshift_matrix_shift[(2:row),(2:col)])
+#F142001_matrixArray<-as.vector(F142001_matrix)
+
+#Check array length
+length(Imageshift_matrix_shift_Array)
+#length(F142001_matrixArray)
+y1+y2
+#length(F142001_matrixArray)-length(Imageshift_matrix_shift_Array)-1 # number of values out of the table (ncol + nrow -1), -1 because col and row share the same 1 cell
+
+#Save the stable matrix with same dimensions
+len1<-length(F142001_matrix)
+row1<-nrow(F142001_matrix)
+col1<-ncol(F142001_matrix)
+len1
+row1
+col1
+y2=row1-1
+y3=col1-1
+len2=len1-1
+F142001_matrix <- as.matrix(F142001)
+F142001_matrix<-F142001_matrix[(1:y2),(1:y3)]
+F142001_matrixArray<-as.vector(F142001_matrix)
+length(F142001_matrixArray)
+F142001_matrixArray
+
+#Same array length
+length(Imageshift_matrix_shift_Array)
+length(F142001_matrixArray)
+
+#Omit the NA values from the arrays
+Imageshift_matrix_shift_Array_NA<-na.omit(Imageshift_matrix_shift_Array)
+F142001_matrixArray_NA<-na.omit(F142001_matrixArray)
+
+#Check the arrays length (with no NA values is different)
+length_shift<-length(Imageshift_matrix_shift_Array_NA)
+length_stable<-length(F142001_matrixArray_NA)
+length_shift# longer than the length_stable
+length_stable
+length_shift-length_stable
+nrow(F142001)#stable, not shifted image/ matrix
+#ncol(F142001)
+
+#Correlation
+cor(Imageshift_matrix_shift_Array_NA[1:length_stable], F142001_matrixArray_NA[1:length_stable])
+
+
+
+
+
+
+
+
+
+
+#________________________________________________________
+#--------------------------------------------------------
+#(17) Right 2 pixel, Down 2 pixel
+#--------------------------------------------------------
+#________________________________________________________
+#________________________________________________________
+#Shift: IMAGE to be shifted..
+#________________________________________________________
+Imageshift <- raster("SaoPauloF142000.tif")
+length(Imageshift)
+#plot(Imageshift, main="Image to be shifted")
+#As matrix
+Imageshift_matrix <- as.matrix(Imageshift)#,  nrow=3, ncol=length(F142001)
+length(Imageshift_matrix)
+
+#Reload the stable image as matrix
+F142001<-raster("SaoPauloF142001.tif")
+F142001_matrix <- as.matrix(F142001)#,  nrow=3, ncol=length(F142001)
+length(F142001_matrix)
+
+#________________________________________________________
+#Right 2 pixel, Down 2 pixel
+#________________________________________________________
+#Shift the image, library(matrixcalc)
+Imageshift_matrix_shift01<-shift.right( Imageshift_matrix, cols=2, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+Imageshift_matrix_shift<-shift.down( Imageshift_matrix_shift01, rows=2, fill = 0) # This function returns a matrix that has had its rows shifted downwards
+
+# filling the above rows with the given fill value.
+head(Imageshift_matrix_shift[160:195,185:200])
+
+len<-length(Imageshift_matrix_shift)
+row<-nrow(Imageshift_matrix_shift)
+col<-ncol(Imageshift_matrix_shift)
+len
+row
+col
+y1=row-2
+y2=col-2
+len1=len-2
+
+#Creat arrays
+Imageshift_matrix_shift_Array<-as.vector(Imageshift_matrix_shift[(3:row),(3:col)])
+#F142001_matrixArray<-as.vector(F142001_matrix)
+
+#Check array length
+length(Imageshift_matrix_shift_Array)
+#length(F142001_matrixArray)
+y1+y2
+#length(F142001_matrixArray)-length(Imageshift_matrix_shift_Array)-1 # number of values out of the table (ncol + nrow -1), -1 because col and row share the same 1 cell
+
+#Save the stable matrix with same dimensions
+len1<-length(F142001_matrix)
+row1<-nrow(F142001_matrix)
+col1<-ncol(F142001_matrix)
+len1
+row1
+col1
+y2=row1-2
+y3=col1-2
+len2=len1-2
+F142001_matrix <- as.matrix(F142001)
+F142001_matrix<-F142001_matrix[(3:row1),(3:col1)]
+F142001_matrixArray<-as.vector(F142001_matrix)
+length(F142001_matrixArray)
+F142001_matrixArray
+
+#Same array length
+length(Imageshift_matrix_shift_Array)
+length(F142001_matrixArray)
+
+#Omit the NA values from the arrays
+Imageshift_matrix_shift_Array_NA<-na.omit(Imageshift_matrix_shift_Array)
+F142001_matrixArray_NA<-na.omit(F142001_matrixArray)
+
+#Check the arrays length (with no NA values is different)
+length_shift<-length(Imageshift_matrix_shift_Array_NA)
+length_stable<-length(F142001_matrixArray_NA)
+length_shift# longer than the length_stable
+length_stable
+length_shift-length_stable
+nrow(F142001)#stable, not shifted image/ matrix
+#ncol(F142001)
+
+#Correlation
+cor(Imageshift_matrix_shift_Array_NA[1:length_stable], F142001_matrixArray_NA[1:length_stable])
