@@ -1,0 +1,1152 @@
+#______________________#
+# Geometric correction #
+#  State of Sao Paulo  #
+#......................#
+#......................#
+# Data are:            #
+# 1.Intercalibrated    #
+# 2. Thresholded (>2.5)#
+#______________________#
+
+# Required packages
+library(raster)
+library(matrixcalc)
+
+op = par(bg = "#DDE3CA")
+
+#Polygon of the state of Sao Paulo
+setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\GISdata\\GISdata_SIRGAS2000\\CityPoints_SIRGAS2000")
+SaoPaulo <- shapefile("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\GISdata\\GISdata_SIRGAS2000\\CityPoints_SIRGAS2000\\SaoPaolo_State.shp")
+proj4string(SaoPaulo) <- CRS("+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs ")
+plot(SaoPaulo)
+
+#________________________________________________________
+#F142001: stable image to compare with all others images
+#________________________________________________________
+setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\DMSP\\DMSP_SIRGA2000\\DMSP_World_SIRGAS2000_calibrated\\World_Calibrated_and_Threshold")
+F142001 <- raster("F142001_CalThr.tif")
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+F142001_crop <- crop(F142001, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(F142001_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment 
+#boundaries
+F142001.masked <- mask(x=F142001_crop, mask=myshp.r)
+
+plot(F142001.masked) 
+
+##As matrix
+#http://www.inside-r.org/packages/cran/raster/docs/as.matrix
+F142001_matrix <- as.matrix(F142001.masked)
+
+length(F142001_matrix)
+
+#-----------------------------
+#_________________________
+#Insert DMSP world images
+#_________________________
+#-----------------------------
+setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\DMSP\\DMSP_SIRGA2000\\DMSP_World_SIRGAS2000_calibrated\\World_Calibrated_and_Threshold")
+image <- raster("F182010_CalThr.tif")
+
+# crop Raster* with Spatial* object
+b <- as(extent(-54.82, -42.60, -18.89, -26.85), 'SpatialPolygons')
+crs(b) <- crs(image)
+image_crop <- crop(image, b)
+
+
+#--------------------------------------------------------
+#(1)Left 1 pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.00833333, y=0)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_one<-cor(F142001_array,Images_array)
+left_one
+
+cor<-c(left_one)
+
+#setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\GISdata\\GISdata_SIRGAS2000\\SaoPaolo\\SaoPaulo_Calibrated Images\\SaoPaulo_threshold25\\SaoPaulo_Find_Corelation_For_GeometrError_Values")
+#rownames(cor_matrix, do.NULL = FALSE)
+#rownames(cor_matrix)<-c("NoMovement", "Left_1_pixel", "Left_2_pixel", "Right_1_pixel", "Right_2_pixel", "Up_1_pixel", "Down_1_pixel", "Up_2_pixel", "Down_2_pixel", "Right_1_pixelANDUp_1_pixel", "Right_2_pixelANDUp_2_pixel", "Left_1_pixelANDDown_1_pixel", "Left_2_pixelANDDown_2_pixel", "Left_1_pixelANDUp_1_pixel", "Left_2_pixelANDUp_2_pixel", "Right_1_pixelANDDown_1_pixel","Right_2_pixelANDDown_2_pixel")
+#write.csv(Images_array, file = "Images_array.csv")
+#write.csv(F142001_array, file = "F142001_array.csv")
+
+#--------------------------------------------------------
+#(2)Left 2 pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.01666666, y=0)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_two<-cor(F142001_array,Images_array)
+left_two
+
+cor<-c(left_one, left_two)
+cor
+
+#--------------------------------------------------------
+#(3)Right 1 pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.00833333, y=0)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_one<-cor(F142001_array,Images_array)
+left_two
+
+cor<-c(left_one, left_two, right_one)
+cor
+
+#--------------------------------------------------------
+#(4)Right 2 pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.01666666, y=0)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_two<-cor(F142001_array,Images_array)
+right_two
+
+cor<-c(left_one, left_two, right_one, right_two)
+cor
+
+#--------------------------------------------------------
+#(5)Up 1 pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0, y=0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+up_one<-cor(F142001_array,Images_array)
+up_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one)
+cor
+
+#--------------------------------------------------------
+#(6)Down 1 pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0, y=-0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+down_one<-cor(F142001_array,Images_array)
+down_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one)
+cor
+
+
+#--------------------------------------------------------
+#(7)Up 2 pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0, y=0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+up_two<-cor(F142001_array,Images_array)
+up_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two)
+cor
+
+
+#--------------------------------------------------------
+#(8)Down 2 pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0, y=-0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+down_two<-cor(F142001_array,Images_array)
+down_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two)
+cor
+
+
+#--------------------------------------------------------
+#(9)Right one pixel & up one pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.00833333, y=0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_one.up_one<-cor(F142001_array,Images_array)
+right_one.up_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one)
+cor
+
+
+#--------------------------------------------------------
+#(10)Right two pixels & up two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.01666666, y=0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_two.up_two<-cor(F142001_array,Images_array)
+right_two.up_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two)
+cor
+
+#--------------------------------------------------------
+#(11)Left one pixel & down one pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.00833333, y=-0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_one.down_one<-cor(F142001_array,Images_array)
+right_one.down_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one)
+cor
+
+
+#--------------------------------------------------------
+#(12)Left two pixels & down two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.01666666, y=-0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_two.down_two<-cor(F142001_array,Images_array)
+left_two.down_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two)
+cor
+
+
+#--------------------------------------------------------
+#(13)Left one pixel & up one pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.00833333, y=0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_one.up_one<-cor(F142001_array,Images_array)
+left_one.up_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one)
+cor
+
+
+#--------------------------------------------------------
+#(14)Left two pixels & up two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.01666666, y=0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_two.up_two<-cor(F142001_array,Images_array)
+left_two.up_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two)
+cor
+
+
+
+#--------------------------------------------------------
+#(15)Right one pixels & down one pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.00833333, y=-0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_one.down_one<-cor(F142001_array,Images_array)
+right_one.down_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one)
+cor
+
+
+#--------------------------------------------------------
+#(16)Right two pixels & down two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.01666666, y=-0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_two.down_two<-cor(F142001_array,Images_array)
+right_two.down_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two)
+cor
+
+
+#--------------------------------------------------------
+#(17)Left two pixels & up one pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.01666666, y=0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_two.up_two<-cor(F142001_array,Images_array)
+left_two.up_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two)
+cor
+
+
+#--------------------------------------------------------
+#(18)Left one pixel & up two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.00833333, y=0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_one.up_two<-cor(F142001_array,Images_array)
+left_one.up_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two)
+cor
+
+
+#--------------------------------------------------------
+#(19)Left two pixels & down one pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.01666666, y=-0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_two.down_one<-cor(F142001_array,Images_array)
+left_two.down_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two, left_two.down_one)
+cor
+
+
+#--------------------------------------------------------
+#(20)Left one pixel & down two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=-0.00833333, y=-0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+left_one.down_two<-cor(F142001_array,Images_array)
+left_one.down_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two, left_two.down_one, 
+       left_one.down_two)
+cor
+
+
+#--------------------------------------------------------
+#(21)Right two pixels & down one pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.01666666, y=-0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_two.down_one<-cor(F142001_array,Images_array)
+right_two.down_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two, left_two.down_one, 
+       left_one.down_two, right_two.down_one)
+cor
+
+
+#--------------------------------------------------------
+#(22)Right one pixel & down two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.00833333, y=-0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_one.down_two<-cor(F142001_array,Images_array)
+right_one.down_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two, left_two.down_one, 
+       left_one.down_two, right_two.down_one, right_one.down_two)
+cor
+
+
+#--------------------------------------------------------
+#(23)Right two pixels & up one pixel
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.01666666, y=0.00833333)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_two.up_one<-cor(F142001_array,Images_array)
+right_two.up_one
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two, left_two.down_one, 
+       left_one.down_two, right_two.down_one, right_one.down_two, right_two.up_one)
+cor
+
+
+#--------------------------------------------------------
+#(24)Right one pixel & up two pixels
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0.00833333, y=0.01666666)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+right_one.up_two<-cor(F142001_array,Images_array)
+right_one.up_two
+
+cor<-c(left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two, left_two.down_one, 
+       left_one.down_two, right_two.down_one, right_one.down_two, right_two.up_one, right_one.up_two)
+cor
+
+#--------------------------------------------------------
+#(25)No movement
+#--------------------------------------------------------
+#Shift
+Image_shift<-shift(image_crop, x=0, y=0)
+
+##Crop F142001 with Sao Paulo polygon
+#Getting the spatial extent of the shapefile
+e<-extent(SaoPaulo)
+#Cropping the raster to the shapefile spatial extent
+Image_shift_crop <- crop(Image_shift, e, snap="out")
+#Dummy raster with a spatial extension equal to the cropped raster,
+#but full of NA values
+crop <- setValues(Image_shift_crop, NA)
+myshp.r <- rasterize(SaoPaulo, crop)
+#Rasterize the catchment boundaries, with NA outside the catchment boundaries
+Image_shift_masked <- mask(x=Image_shift_crop, mask=myshp.r)
+
+#As matrix
+Images_matrix <- as.matrix(Image_shift_masked)
+
+length(Images_matrix)
+length(F142001_matrix)
+
+#As array
+F142001_array<-c(F142001_matrix)
+Images_array<-c(Images_matrix)
+
+#Omit the NA values
+F142001_array<-na.omit(F142001_array)
+Images_array<-na.omit(Images_array)
+
+length(F142001_array)
+length(Images_array)
+
+no.movement<-cor(F142001_array,Images_array)
+no.movement
+
+cor<-c(no.movement, left_one, left_two, right_one, right_two, up_one, down_one, up_two, down_two, right_one.up_one,
+       right_two.up_two, right_one.down_one, left_two.down_two, left_one.up_one, left_two.up_two,
+       right_one.down_one, right_two.down_two, left_two.up_two, left_one.up_two, left_two.down_one, 
+       left_one.down_two, right_two.down_one, right_one.down_two, right_two.up_one, right_one.up_two)
+cor
+
+length(cor)
+
+setwd("C:\\Users\\Kassiani\\WWU\\MasterThesis_(new)\\Data\\GISdata\\GISdata_SIRGAS2000\\SaoPaolo\\SaoPaulo_Calibrated Images\\SaoPaulo_threshold25\\SaoPaulo_Find_Corelation_For_GeometrError_Values")
+
+#rownames(cor_matrix, do.NULL = FALSE)
+#rownames(cor_matrix)<-c("NoMovement", "Left_1_pixel", "Left_2_pixel", "Right_1_pixel", "Right_2_pixel", "Up_1_pixel", "Down_1_pixel", "Up_2_pixel", "Down_2_pixel", "Right_1_pixelANDUp_1_pixel", "Right_2_pixelANDUp_2_pixel", "Left_1_pixelANDDown_1_pixel", "Left_2_pixelANDDown_2_pixel", "Left_1_pixelANDUp_1_pixel", "Left_2_pixelANDUp_2_pixel", "Right_1_pixelANDDown_1_pixel","Right_2_pixelANDDown_2_pixel")
+
+write.csv(cor, file = "corF182010.csv")
