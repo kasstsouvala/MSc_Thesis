@@ -67,6 +67,7 @@ plot(graph.cummul.perc, breaks, xlab="Relative Cumulative Frequency of districts
 axis(side=2, at = seq(0, 300, by = 50))
 axis(side=1, at = seq(0, 1, by = 0.1))
 #lines(graph.cummul.perc, breaks)
+cbind( Freq=cummul.freq, Cumul=cumsum(cummul.freq), relative=prop.table(cummul.freq))
 
 
 
@@ -116,6 +117,7 @@ axis(side=2, at = seq(0, 170, by = 10))
 axis(side=1, at = seq(0, 1, by = 0.1))
 
 #lines(graph.cummul.perc, breaks)
+cbind( Freq=cummul.freq, Cumul=cumsum(cummul.freq), relative=prop.table(cummul.freq))
 
 
 
@@ -165,6 +167,7 @@ plot(graph.cummul.perc, breaks, xlab="Relative Cumulative Frequency of districts
 axis(side=2, at = seq(0, 90, by = 10))
 axis(side=1, at = seq(0, 1, by = 0.1))
 #lines(graph.cummul.perc, breaks)
+cbind( Freq=cummul.freq, Cumul=cumsum(cummul.freq), relative=prop.table(cummul.freq))
 
 
 #----------------
@@ -212,4 +215,5 @@ plot(graph.cummul.perc, breaks, xlab="Relative Cumulative Frequency of districts
 axis(side=2, at = seq(0, 50, by = 10))
 axis(side=1, at = seq(0, 1, by = 0.1))
 #lines(graph.cummul.perc, breaks)
+cbind( Freq=cummul.freq, Cumul=cumsum(cummul.freq), relative=prop.table(cummul.freq))
 
