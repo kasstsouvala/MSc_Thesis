@@ -1,0 +1,215 @@
+
+#____
+#Data
+#____
+op = par(bg = "#DDE3CA")
+setwd("C:\\.....\\GISdata_SIRGAS2000\\PopulationNeedData")
+data = read.csv("FrequencyAnalysis.csv")
+head(data)
+
+
+#hist(data$Water_dist_km, main = "Frequency analysis: Distance from rivers",
+#     xlab="Distance from rivers",
+#     ylab="Frequency",
+#     cex.lab=0.9,cex.axis = 0.9, col.lab="black", 
+#     font.lab=2, col.main="deepskyblue4")
+
+#h <- hist(data$Water_dist_km)
+#h$counts <- cumsum(h$counts) # replace the cell freq.s by cumulative freq.s
+#plot( h ) # plot a cumulative histogram of y
+
+#___________________________________
+#Accumulative Frequency Analycis: 
+#___________________________________
+op = par(bg = "#DDE3CA")
+#----------------
+#Cities - Rivers
+#----------------
+# find the max and min for our data
+max.data<-max(data$Water_dist_Kmeters)
+min.data<-min(data$Water_dist_Kmeters)
+
+# using the max and min, slice our data into 20 sections
+slice=round((max.data-min.data)/400)
+breaks=seq(min.data, max.data, by=slice)
+
+# Assign each point into their appropriate section
+cut.data=cut(data$Water_dist_Kmeters, breaks, right=FALSE)
+cut.data
+
+# Create a table to count the frequency by section
+frequency=table(cut.data)
+frequency
+
+# Add up the frequencies in the table
+cummul.freq=cumsum(frequency)
+cummul.freq
+
+# Calculate the Relative Frequency
+relative.frequency=frequency/sum(frequency)
+cf=as.data.frame(cummul.freq)
+cf
+
+cummul.freq=cf[,1]
+cummul.freq
+
+cummul.percentile=cummul.freq/max(cummul.freq)
+
+cbind(frequency,relative.frequency,cummul.freq, cummul.percentile)
+
+graph.cummul.perc =c(0, cummul.percentile)#   cummul.percentile
+plot(graph.cummul.perc, breaks, xlab="Relative Cumulative Frequency of districts (%)", ylab="Distance from rivers (Km)", 
+     main="Relative Cumulative Frequency\nDistance from rivers",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", 
+     font.lab=2, col.main="deepskyblue4",
+     pch=20,
+     bg="black",axes=FALSE)
+axis(side=2, at = seq(0, 300, by = 50))
+axis(side=1, at = seq(0, 1, by = 0.1))
+#lines(graph.cummul.perc, breaks)
+
+
+
+#---------------------
+#Cities - Road network
+#---------------------
+# find the max and min for our data
+max.data<-max(data$RoadNetwork_Kmeters)
+min.data<-min(data$RoadNetwork_Kmeters)
+
+# using the max and min, slice our data into 20 sections
+slice=round((max.data-min.data)/200)
+breaks=seq(min.data, max.data, by=slice)
+
+# Assign each point into their appropriate section
+cut.data=cut(data$RoadNetwork_Kmeters, breaks, right=FALSE)
+cut.data
+
+# Create a table to count the frequency by section
+frequency=table(cut.data)
+frequency
+
+# Add up the frequencies in the table
+cummul.freq=cumsum(frequency)
+cummul.freq
+
+# Calculate the Relative Frequency
+relative.frequency=frequency/sum(frequency)
+cf=as.data.frame(cummul.freq)
+cf
+
+cummul.freq=cf[,1]
+cummul.freq
+
+cummul.percentile=cummul.freq/max(cummul.freq)
+
+cbind(frequency,relative.frequency,cummul.freq, cummul.percentile)
+
+graph.cummul.perc =c(0, cummul.percentile)#   cummul.percentile
+plot(graph.cummul.perc, breaks, xlab="Relative Cumulative Frequency of districts (%)", ylab="Distance from roads (Km)", 
+     main="Relative Cumulative Frequency\nDistance from roads",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", 
+     font.lab=2, col.main="deepskyblue4",
+     pch=20,
+     bg="black", axes=FALSE)
+axis(side=2, at = seq(0, 170, by = 10))
+axis(side=1, at = seq(0, 1, by = 0.1))
+
+#lines(graph.cummul.perc, breaks)
+
+
+
+
+#----------------
+#Cities - Slope
+#----------------
+# find the max and min for our data
+max.data<-max(data$Slope)
+min.data<-min(data$Slope)
+
+# using the max and min, slice our data into 20 sections
+slice=round((max.data-min.data)/60)
+breaks=seq(min.data, max.data, by=slice)
+
+# Assign each point into their appropriate section
+cut.data=cut(data$Slope, breaks, right=FALSE)
+cut.data
+
+# Create a table to count the frequency by section
+frequency=table(cut.data)
+frequency
+
+# Add up the frequencies in the table
+cummul.freq=cumsum(frequency)
+cummul.freq
+
+# Calculate the Relative Frequency
+relative.frequency=frequency/sum(frequency)
+cf=as.data.frame(cummul.freq)
+cf
+
+cummul.freq=cf[,1]
+cummul.freq
+
+cummul.percentile=cummul.freq/max(cummul.freq)
+
+cbind(frequency,relative.frequency,cummul.freq, cummul.percentile)
+
+graph.cummul.perc =c(0, cummul.percentile)#   cummul.percentile
+plot(graph.cummul.perc, breaks, xlab="Relative Cumulative Frequency of districts (%)", ylab="Slope", 
+     main="Relative Cumulative Frequency\nSlope",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", 
+     font.lab=2, col.main="deepskyblue4",
+     pch=20,
+     bg="black",axes=FALSE)
+axis(side=2, at = seq(0, 90, by = 10))
+axis(side=1, at = seq(0, 1, by = 0.1))
+#lines(graph.cummul.perc, breaks)
+
+
+#----------------
+#Cities - Forest
+#----------------
+# find the max and min for our data
+max.data<-max(data$Forest)
+min.data<-min(data$Forest)
+
+# using the max and min, slice our data into 20 sections
+slice=round((max.data-min.data)/42)
+breaks=seq(min.data, max.data, by=slice)
+
+# Assign each point into their appropriate section
+cut.data=cut(data$Forest, breaks, right=FALSE)
+cut.data
+
+# Create a table to count the frequency by section
+frequency=table(cut.data)
+frequency
+
+# Add up the frequencies in the table
+cummul.freq=cumsum(frequency)
+cummul.freq
+
+# Calculate the Relative Frequency
+relative.frequency=frequency/sum(frequency)
+cf=as.data.frame(cummul.freq)
+cf
+
+cummul.freq=cf[,1]
+cummul.freq
+
+cummul.percentile=cummul.freq/max(cummul.freq)
+
+cbind(frequency,relative.frequency,cummul.freq, cummul.percentile)
+
+graph.cummul.perc =c(0, cummul.percentile)#   cummul.percentile
+plot(graph.cummul.perc, breaks, xlab="Relative Cumulative Frequency of districts (%)", ylab="Forest height", 
+     main="Relative Cumulative Frequency\nForest height",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", 
+     font.lab=2, col.main="deepskyblue4",
+     pch=20,
+     bg="black",axes=FALSE)
+axis(side=2, at = seq(0, 50, by = 10))
+axis(side=1, at = seq(0, 1, by = 0.1))
+#lines(graph.cummul.perc, breaks)
+
