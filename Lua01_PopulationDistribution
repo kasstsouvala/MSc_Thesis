@@ -1,0 +1,431 @@
+--Amazonia
+
+csQ = CellularSpace{
+ dbType = "mysql", 
+ host = "localhost", 
+ database = "Thesis03", 
+ user = "root", 
+ password = "greece", 
+ theme = "Cells10x10km_0083x0083m",
+ layer = "Amazonia"
+ 
+ --select = {"Average_Spot", "FlowGrid_slope", "Temp200301","rain200301"} 
+ --where = "mask <> ‘noData’" 
+	}
+csQ:load()
+
+cellSpaceSize = 10 * 10; -- km2
+FINAL_TIME = 2 ; 
+
+--Population
+pop2000 = 21056532;
+pop2010 = 25474365;
+--RoadDistance (km)
+MinRoad = 1;
+EqRoad = 4;
+MaxRoad = 158;
+--Riverdistance (km)
+MinRiver = 1;
+EqRiver = 26;
+MaxRiver = 245;
+--Urban nuclie distance (km)
+MinUrban =1;
+EqUrban = 6.1;
+MaxUrban = 160;
+--Forest cover 2000 (%)
+MinForest2000 = 2;
+EqForest2000 = 76;
+MaxForest2000 = 99;
+--Forest height 2010 (m)
+MinForest2010 = 1;
+EqForest2010 = 13;
+MaxForest2010 = 40;
+--Public elecricity consumption 2000 (MWh)
+MinEl2000 = 3;
+EqEl2000 = 36;
+MaxEl2000 = 114;
+--Public elecricity consumption 2010 (MWh)
+MinEl2010 = 3;
+EqEl2010 = 35;
+MaxEl2010 = 108;
+--sum of all Fgrid
+Fsum = 0
+
+-- RULES		
+csQ:createNeighborhood{
+  strategy = "moore"
+}
+	
+csQ:synchronize();
+
+
+-- Legends
+deforLeg = Legend{
+	slices = 10,
+	colorBar = {
+		{value = 0, color = "green"},
+		{value = 1, color = "red"}
+	}
+}
+
+
+-- Observers
+Electricity2000Leg = Legend{
+	type = "number",
+	grouping = "equalsteps",
+	slices = 10,
+	precision = 2,
+	maximum = 160, 
+	minimum = 3,
+	colorBar = {
+		{color = "black", value = 160},
+		{color = "white", value = 1}
+	}
+}
+
+obs1 = Observer{
+	subject = csQ,
+	type = "map",
+	attributes = {"Electricity2000"},
+	legends= {Electricity2000Leg}
+}
+
+obs1 = Observer{
+	subject = csQ,
+	type = "image",
+	attributes = {"Electricity2000"},
+	legends= {Electricity2000Leg}
+}
+
+--obs5 = Observer{
+--	subject = csQ.cells,
+--	type = "chart",
+ --              title = "water",
+ --              yLabel = "Water (mm)",
+--               xLabel = "Time (time)",
+--               curveLabels = {"water_flow"},                                    
+--               attributes = {"Electricity2000"} 
+--}
+
+csQ:notify()
+
+
+TotalFsum2000 = 0
+TotalFsum2010 = 0
+        
+forEachCell(csQ, function(cell)
+       
+        cell.population = 0
+        
+        Froad = 0
+        TotalFroad =0
+        
+        Friver = 0
+        TotalFriver = 0
+        
+        Furban = 0
+        TotalFurban = 0
+         
+        Fforest2000 = 0
+        TotalFforest2000 = 0
+        
+        Fforest2010 = 0
+        TotalFforest2010 = 0
+        
+        Fel2000 = 0
+        TotalFel2000 = 0
+        
+        Fel2010 = 0
+        TotalFel2010 = 0
+        
+ 
+        cell.Fsum2000 = 0
+        cell.Fsum2010 = 0
+        
+        cell.Population2000 = 0
+        cell.Population2010 = 0
+        
+        cell.EleCapita2000 = 0
+        cell.EleCapita2010 = 0
+		
+		--cell:notify()
+		
+        --Road: calculate the F(x)
+        if cell.RoadDistance_m > -1 then
+        	if cell.RoadDistance_m <= 1000 then
+               Froad = 1
+               TotalFroad = Froad + TotalFroad
+           	elseif cell.RoadDistance_m >= 20000 then
+               Froad = 0
+               TotalFroad = Froad + TotalFroad
+           	else
+               Froad = 1/(1+0.000000111111*(cell.RoadDistance_m-1000)^2)
+               TotalFroad = Froad + TotalFroad
+           	end
+        end
+        --River: calculate the F(x)
+        if cell.RiversDistance_m > -1 then
+        	if cell.RiversDistance_m <= 1000 then
+               Friver = 1
+               TotalFriver = Friver + TotalFriver
+           	elseif cell.RiversDistance_m >= 150000 then
+               Friver = 0
+               TotalFriver = Friver + TotalFriver
+           	else
+               Friver = 1/(1+0.00000016*(cell.RiversDistance_m-1000)^2)
+               TotalFriver = Friver + TotalFriver
+           	end
+        end
+        --Urban: calculate the F(x)
+        if cell.UrbanDistance_m > -1 then
+        	if cell.UrbanDistance_m <= 1000 then
+               Furban = 1
+               TotalFurban = Furban + TotalFurban
+           	elseif cell.UrbanDistance_m >= 30000 then
+               Furbam = 0
+               TotalFurban = Furban + TotalFurban
+           	else
+               Furban = 1/(1+0.00000016*(cell.UrbanDistance_m-1000)^2)
+               TotalFurban = Furban + TotalFurban
+           	end
+        end
+        --Forest cover 2000: calculate the F(x)
+        if cell.ForestCover2000 > -1 then
+        	if cell.ForestCover2000 <= 2 then
+               Fforest2000 = 1
+               TotalFforest2000 = Fforest2000 + Fforest2000
+           	elseif cell.ForestCover2000 >= 99 then
+               Fforest2000 = 0
+               TotalFforest2000 = Fforest2000 + Fforest2000
+           	else
+               Fforest2000 = 1/(1+0.000183*(cell.ForestCover2000-2)^2)
+               TotalFforest2000 = Fforest2000 + Fforest2000
+           	end
+        end
+        --Forest height 2010: calculate the F(x)
+        if cell.ForestHeight2010_m > -1 then
+        	if cell.ForestHeight2010_m <= 1 then
+               Fforest2010 = 1
+               TotalFforest2010 = Fforest2010 + TotalFforest2010
+           	elseif cell.ForestHeight2010_m >= 40 then
+               Fforest2010 = 0
+               TotalFforest2010 = Fforest2010 + TotalFforest2010
+           	else
+               Fforest2010 = 1/(1+0.00694*(cell.ForestHeight2010_m-1000)^2)
+               TotalFforest2010 = Fforest2010 + TotalFforest2010
+           	end
+        end
+        --Elecricity 2000: calculate the F(x)
+        if cell.Electricity2000 > -1 then
+        	if cell.Electricity2000 <= 3 then
+               Fel2000 = 0
+               TotalFel2000 = Fel2000 + TotalFel2000
+           	elseif cell.Electricity2000 >= 114 then
+               Fel2000 = 1
+               TotalFel2000 = Fel2000 + TotalFel2000
+           	else
+               Fel2000 = 1/(1+0.000918*(cell.Electricity2000-3)^2)
+               TotalFel2000 = Fel2000 + TotalFel2000
+           	end
+        end
+		--Elecricity 2010: calculate the F(x)
+        if cell.Electricity2010 > -1 then
+        	if cell.Electricity2010 <= 3 then
+               Fel2010 = 0
+               TotalFel2010 = Fel2010 + TotalFel2010
+           	elseif cell.Electricity2010 >= 108 then
+               Fel2010 = 1
+               TotalFel2010 = Fel2010 + TotalFel2010
+           	else
+               Fel2010 = 1/(1+0.000977*(cell.Electricity2010-3)^2)
+               TotalFel2010 = Fel2010 + TotalFel2010
+               --print("TotalFel2010: ", TotalFel2010);
+           	end
+        end
+            
+        cell.Fsum2000 = Fel2000+Fforest2000+Furban+Friver+Froad
+        cell.Fsum2010 = Fel2010+Fforest2010+Furban+Friver+Froad
+        
+        cell.Population2000 = pop2000 * (cell.Fsum2000 / TotalFsum2000)
+        cell.Population2010 = pop2010 * (cell.Fsum2010 / TotalFsum2010)
+       
+        cell:notify()
+
+        TotalFsum2000 = cell.Fsum2000 + TotalFsum2000
+        TotalFsum2010 = cell.Fsum2010 + TotalFsum2010
+        --print("TotalFsum2000: ", TotalFsum2000);
+		
+end)
+
+--Total2000 = function(csQ)
+--	total = 0
+--	forEachCell(csQ, function(cell)
+--		total = total + cell.Fsum2000
+--	end)
+--	print(total);
+--end
+        
+        
+		print("Sum F 2000: ", TotalFsum2000);
+        print("Sum F 2010: ", TotalFsum2010);
+        
+totalPop2000 = 0     
+totalPop2010 = 0      
+
+forEachCell(csQ, function(cell2)
+       
+        cell2.population = 0
+        
+        Froad = 0
+        TotalFroad =0
+        
+        Friver = 0
+        TotalFriver = 0
+        
+        Furban = 0
+        TotalFurban = 0
+         
+        Fforest2000 = 0
+        TotalFforest2000 = 0
+        
+        Fforest2010 = 0
+        TotalFforest2010 = 0
+        
+        Fel2000 = 0
+        TotalFel2000 = 0
+        
+        Fel2010 = 0
+        TotalFel2010 = 0
+        
+ 
+        cell2.Fsum2000 = 0
+        cell2.Fsum2010 = 0
+        
+        cell2.Population2000 = 0
+        cell2.Population2010 = 0
+        
+        cell2.EleCapita2000 = 0
+        cell2.EleCapita2010 = 0
+		
+		cell2:notify()
+		
+        --Road: calculate the F(x)
+        if cell2.RoadDistance_m > -1 then
+        	if cell2.RoadDistance_m <= 1000 then
+               Froad = 1
+           	elseif cell2.RoadDistance_m >= 20000 then
+               Froad = 0
+           	else
+               Froad = 1/(1+0.000000111111*(cell2.RoadDistance_m-1000)^2)
+           	end
+        end
+        --River: calculate the F(x)
+        if cell2.RiversDistance_m > -1 then
+        	if cell2.RiversDistance_m <= 1000 then
+               Friver = 1
+           	elseif cell2.RiversDistance_m >= 150000 then
+               Friver = 0
+           	else
+               Friver = 1/(1+0.00000016*(cell2.RiversDistance_m-1000)^2)
+           	end
+        end
+        --Urban: calculate the F(x)
+        if cell2.UrbanDistance_m > -1 then
+        	if cell2.UrbanDistance_m <= 1000 then
+               Furban = 1
+           	elseif cell2.UrbanDistance_m >= 30000 then
+               Furbam = 0
+           	else
+               Furban = 1/(1+0.00000016*(cell2.UrbanDistance_m-1000)^2)
+           	end
+        end
+        --Forest cover 2000: calculate the F(x)
+        if cell2.ForestCover2000 > -1 then
+        	if cell2.ForestCover2000 <= 2 then
+               Fforest2000 = 1
+           	elseif cell2.ForestCover2000 >= 99 then
+               Fforest2000 = 0
+           	else
+               Fforest2000 = 1/(1+0.000183*(cell2.ForestCover2000-2)^2)
+           	end
+        end
+        --Forest height 2010: calculate the F(x)
+        if cell2.ForestHeight2010_m > -1 then
+        	if cell2.ForestHeight2010_m <= 1 then
+               Fforest2010 = 1
+           	elseif cell2.ForestHeight2010_m >= 40 then
+               Fforest2010 = 0
+           	else
+               Fforest2010 = 1/(1+0.00694*(cell2.ForestHeight2010_m-1000)^2)
+           	end
+        end
+        --Elecricity 2000: calculate the F(x)
+        if cell2.Electricity2000 > -1 then
+        	if cell2.Electricity2000 <= 3 then
+               Fel2000 = 0
+           	elseif cell2.Electricity2000 >= 114 then
+               Fel2000 = 1
+           	else
+               Fel2000 = 1/(1+0.000918*(cell2.Electricity2000-3)^2)
+           	end
+        end
+		--Elecricity 2010: calculate the F(x)
+        if cell2.Electricity2010 > -1 then
+        	if cell2.Electricity2010 <= 3 then
+               Fel2010 = 0
+           	elseif cell2.Electricity2010 >= 108 then
+               Fel2010 = 1
+           	else
+               Fel2010 = 1/(1+0.000977*(cell2.Electricity2010-3)^2) 
+           	end
+        end
+            
+        cell2.Fsum2000 = Fel2000+Fforest2000+Furban+Friver+Froad
+        cell2.Fsum2010 = Fel2010+Fforest2010+Furban+Friver+Froad
+        
+        cell2.Population2000 = pop2000 * (cell2.Fsum2000 / TotalFsum2000)
+        cell2.Population2010 = pop2010 * (cell2.Fsum2010 / TotalFsum2010)
+         
+       --print("Population 2000: ",  cell2.Population2000);
+       --print("Population 2010: ",  cell2.Population2010);
+        --print("Fsum 2000: ",  cell2.Fsum2000);
+        --print("Fsum 2010: ", cell2.Fsum2010);
+        
+		cell2:notify()
+		
+		totalPop2000 = cell2.Population2000 + totalPop2000
+		totalPop2010 = cell2.Population2010 + totalPop2010
+end)        
+        
+ 		print("Population 2000: ",  totalPop2000);
+        print("Population 2010: ",  totalPop2010);
+--for time = 1, FINAL_TIME, 1 do
+-- print( "t: "..time );
+-- initialize the potential
+--for i, cell in pairs( csQ.cells ) do
+-- cell.pot = 0;
+ --end
+ 
+ 
+ 		
+ 
+ 
+ 
+ --end;
+
+
+
+--t = Timer{
+--	Event{time = 1, action = function(event)
+--		print("Time:", event:getTime()) io.flush()
+--		printTraj(trajRiver)
+--		--FlowRiver = inFlow - outFlow
+--		FlowRiver = inFlow - outFlow
+--		print("FlowRiver:"..FlowRiver)
+--		--csQ:notify()
+--	end}
+--}
+
+t:execute(1)
+
+
