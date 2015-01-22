@@ -1,0 +1,83 @@
+#http://www.statmethods.net/graphs/bar.html
+setwd("C:\\Users\\...................\\Calibration_03")
+Elect = read.csv("ElectricityStates_compareReport.csv")
+head(Elect)
+
+op = par(bg = "#DDE3CA")
+
+#Point plot
+library(ggplot2)
+
+df1<-data.frame(x=Elect$States[1:9],y=Elect$Year2010[1:9])
+df2<-data.frame(x=Elect$States[1:9],y=Elect$Public_Iumination2010[1:9])
+df3<-data.frame(x=Elect$States[1:9],y=Elect$Public_Services2010[1:9])
+df4<-data.frame(x=Elect$States[1:9],y=Elect$Public_power2010[1:9])
+df5<-data.frame(x=Elect$States[1:9],y=Elect$Sum_Pserv_PPower[1:9])
+df6<-data.frame(x=Elect$States[1:9],y=Elect$Commercial[1:9])
+
+df1$x<-factor(df1$x,levels=c("PA", "MT", "MA",  
+                     "RO", "AM", "TO","AC", "AP", "RR"),ordered=TRUE)
+#df1$y<-factor(df1$y, levels=c(979.69, 885.63, 612.62, 
+#                              403.66, 367.52, 343.39, 135.76, 104.54, 97.03),ordered=TRUE)
+
+#df2$x<-factor(df2$x,levels=c("PA", "MT", "MA",  
+#                             "RO", "AM", "TO","AC", "AP", "RR"),ordered=TRUE)
+#df2$y<-factor(df2$y, levels=c(252, 218, 308,  84, 116, 104,  32,  41,  27),ordered=TRUE)
+
+#df3$x<-factor(df3$x,levels=c("PA", "MT", "MA",  
+#                             "RO", "AM", "TO","AC", "AP", "RR"),ordered=TRUE)
+#df3$y<-factor(df3$y, levels=c(226, 155, 259,  50, 196 , 47,  23,  22,  20),ordered=TRUE)
+
+#df4$x<-factor(df4$x,levels=c("PA", "MT", "MA",  
+#                             "RO", "AM", "TO","AC", "AP", "RR"),ordered=TRUE)
+#df4$y<-factor(df4$y, levels=c(418, 281 ,263 ,163 ,443, 117,  92 , 94 , 78),ordered=TRUE)
+
+
+ggplot(df1,aes(x,y))+geom_point(aes(color="DMSP measured electricity"),size=4.2)+
+  geom_point(data=df2,aes(df2$x,df2$y,color="Public lumination electricity"),size=3.2)+
+  geom_point(data=df3,aes(df3$x,df3$y,color="Public services electricity"),size=3.2)+
+  geom_point(data=df4,aes(color="Public Power"),size=3.2)+
+  geom_point(data=df5,aes(df5$x,df5$y,color="Sum (Public services & Power)"),size=3.2)+
+  geom_point(data=df6,aes(df6$x,df6$y,color="Sum (Commercial)"),size=3.2)+
+  labs(color="Legend text")+ ggtitle("Electrical power comparison 2010")+ 
+  theme(plot.title = element_text(lineheight=1, face="bold"))+
+  ylab("Electricity (GWh)") +
+  xlab("Amazonian states")
+  
+
+
+
+
+#BAR PLOT DATA:
+setwd("C:\\Users\\...........\\Calibration_03")
+Elect = read.csv("ElectricityStates.csv")
+head(Elect)
+#Bar plot
+barplot(as.matrix(Elect),
+        main="Public electrical power consumption 2000 & 2010\nBrazilian Amazonia",
+        xlab="States", ylab="Public electrical consumption (GWh)", col=c("deepskyblue4","grey", "gray47"),col.main="deepskyblue4",
+        cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2,beside=TRUE
+        )#beside=TRUE, "cyan3","darkblue"
+legend("topleft", 
+       legend = c("2000 Prediction", "2010 Prediction", "2010 Measured"), 
+       fill = c("deepskyblue4","grey", "gray47"), bty = "n")
+
+#topright
+#topleft
+
+
+
+#Not used
+#Percent
+matrix<-( 
+  rbind(
+    c(65101.25, 203367.0,  57615.43, 678.8929, 416376.0, 526644.0, 556820.4, 208251.2, 56449.47, 248356.9), 
+    c( 135760.81, 367516.3, 104538.41, 926.3906, 612619.8, 885626.2, 979690.9,403661.2, 97030.26, 343389.2)
+  )
+)
+
+barplot(prop.table(matrix),2)
+
+
+
+
