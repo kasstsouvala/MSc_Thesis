@@ -1,0 +1,435 @@
+
+
+
+library(ggplot2)
+ggplot(data = data, mapping = aes(x = het1$x1, y = het1$y1)) + geom_point(aes(colour = het1$x1), shape = 19)
+
+
+#********************************#
+#       * Sao Paulo 2010 *       #
+#        Heteroscedasity         #
+# -Energy consumption & pixels-  #
+#********************************#
+#http://dss.princeton.edu/online_help/analysis/regression_intro.htm
+#Data
+
+#1.Full Sao Paulo Data
+setwd("C:\\Users\\....\\WWU\\MasterThesis_(new)\\Scripts\\Rscripts\\Calibration_03\\SaoPaulo_OurApproach2010\\4a.ElectricalConsumption")
+data1<-read.table("ElectCon_allValues_2010Copy.csv", sep=",", header=T)
+head(data1)
+y1<-data1$Public_2010
+summary(y1)
+x1<-data1$Pixel_sum
+summary(x1)
+dataset1 <- data.frame(x1, y1)
+het1<-data.frame(y1=log10(y1), x1=log10(x1))
+
+#2.Discarded on border with greater Sao Paulo Data
+setwd("C:\\Users\\...\\WWU\\MasterThesis_(new)\\Scripts\\Rscripts\\Calibration_03\\SaoPaulo_OurApproach2010\\4d.Outliers(border)")
+data2<-read.table("ElectCon_allValues_2010Copy.csv", sep=",", header=T)
+head(data2)
+y2<-data2$Public_2010
+summary(y2)
+x2<-data2$Pixel_sum
+summary(x2)
+dataset2 <- data.frame(x2, y2)
+het2<-data.frame(y2=log10(y2), x2=log10(x2))
+
+#3.Discarded Greater Sao Paulo Data
+setwd("C:\\Users\\...\\WWU\\MasterThesis_(new)\\Scripts\\Rscripts\\Calibration_03\\SaoPaulo_OurApproach2010\\4c.Outliers")
+data3<-read.table("ElectCon_allValues_2010Copy.csv", sep=",", header=T)
+head(data3)
+op = par(bg = "#DDE3CA")
+y3<-data3$Public_2010
+summary(y3)
+x3<-data3$Pixel_sum
+summary(x3)
+dataset3 <- data.frame(x3, y3)
+het3<-data.frame(y3=log10(y3), x3=log10(x3))
+
+
+#PLOT: the all data
+#3.Discarded Greater Sao Paulo Data
+setwd("C:\\Users\\...\\WWU\\MasterThesis_(new)\\Scripts\\Rscripts\\Calibration_03\\SaoPaulo_OurApproach2010\\4c.Outliers")
+data3<-read.table("ElectCon_allValues_2010Copy.csv", sep=",", header=T)
+head(data3)
+op = par(bg = "#DDE3CA")
+y3<-data3$Public_2010
+summary(y3)
+x3<-data3$Pixel_sum
+summary(x3)
+dataset3 <- data.frame(x3, y3)
+het3<-data.frame(y3=log10(y3), x3=log10(x3))
+
+################################
+#PLOT: Discarded on dorde states
+plot(het1$x1, het1$y1,main = "Sao Paulo 2010 (log)",
+     xlab="Sum of lit cell values, log",ylab="Public services energy (MWh), log",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4",
+     col="gray7")
+#points(het2$x2, het2$y2, col="gray7", cex.lab=0.9,cex.axis = 0.9, col.lab="red", 
+#       font.lab=2)
+
+# linear model: a, b
+m.linear<-lm(het1$y1 ~ het1$x1)
+summary(m.linear)
+#abline(m.linear, col="darkred", lwd=2)
+#legend("topleft", bty="n", legend=paste(" R2 = ", format(summary(m.linear)$r.squared, digits=4),"\n",legend='Cor = 0.8417181')) #summary(fit)$adj.r.squared
+
+exponential.model <- nls(het1$y1~(a*exp(b*het1$x1)),start=list(a=1.1635,b=0.3235 ))#c= Intercept, b=1 -> y =...
+summary(exponential.model)
+cor(het1$x1, het1$y1)
+# Add fitted curve
+#http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/appendix/Appendix-Nonlinear-Regression.pdf
+#lines(lines(seq(-1,length(het2$x2),by=1),predict(exponential.model, data.frame(x1=seq(-1,length(het2$x2)),by=1)), col = "deepskyblue4", lwd=2))
+legend("bottomright", bty="n",legend=('R2 = 0.7178 \nCor = 0.8417\n')) #summary(fit)$adj.r.squared
+summary(m.linear)$r.squared 
+
+f<-function(x,a,b){a*exp(b*x)}
+fit <- nls(het1$y1 ~ f(het1$x1,a,b), start = c(a=0.3913, b=2.6909))
+co<-coef(fit)
+curve(f(x, a=co[1], b=co[2]), add = TRUE, col="black", lwd=2) 
+
+################################
+#PLOT: Discarded on dorde states
+plot(het1$x1, het1$y1,main = "Sao Paulo 2010 (log) \nDiscarded states on dorde with metropoly",
+     xlab="Sum of lit cell values, log",ylab="Public services energy (MWh), log",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4",
+     col="gray7")
+points(het2$x2, het2$y2, col="gray7", cex.lab=0.9,cex.axis = 0.9, col.lab="red", 
+       font.lab=2)
+
+# linear model: a, b
+m.linear<-lm(het2$y2 ~ het2$x2)
+summary(m.linear)
+#abline(m.linear, col="darkred", lwd=2)
+#legend("topleft", bty="n", legend=paste(" R2 = ", format(summary(m.linear)$r.squared, digits=4),"\n",legend='Cor = 0.8417181')) #summary(fit)$adj.r.squared
+
+exponential.model <- nls(het2$y2~(a*exp(b*het2$x2)),start=list(a=1.1635,b=0.3235 ))#c= Intercept, b=1 -> y =...
+summary(exponential.model)
+cor(het2$x2, het2$y2)
+# Add fitted curve
+#http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/appendix/Appendix-Nonlinear-Regression.pdf
+#lines(lines(seq(-1,length(het2$x2),by=1),predict(exponential.model, data.frame(x1=seq(-1,length(het2$x2)),by=1)), col = "deepskyblue4", lwd=2))
+legend("bottomright", bty="n",legend=('R2 = 0.7674 \nCor = 0.8682\n')) #summary(fit)$adj.r.squared
+summary(m.linear)$r.squared 
+
+f<-function(x,a,b){a*exp(b*x)}
+fit <- nls(het2$y2 ~ f(het2$x2,a,b), start = c(a=0.3913, b=2.6909))
+co<-coef(fit)
+curve(f(x, a=co[1], b=co[2]), add = TRUE, col="black", lwd=2) 
+
+##################################
+#PLOT: Discarded Greater Sao Paulo
+plot(het2$x2, het2$y2,main = "Sao Paulo 2010 (log) \nDiscarded 'Greater' Sao Paulo",
+     xlab="Sum of lit cell values, log",
+     ylab="Public services energy (MWh), log",cex.lab=0.9,cex.axis = 0.9, 
+     col.lab="black", font.lab=2, col.main="deepskyblue4",col="red3")
+points(het3$x3, het3$y3, col="black", cex.lab=0.9,cex.axis = 0.9, col.lab="green", font.lab=2)
+#pch=19,
+
+# linear model: a, b
+m.linear<-lm(het3$y3 ~ het3$x3)
+summary(m.linear)
+#abline(m.linear, col="darkred", lwd=2)
+#legend("topleft", bty="n", legend=paste(" R2 = ", format(summary(m.linear)$r.squared, digits=4),"\n",legend='Cor = 0.8417181')) #summary(fit)$adj.r.squared
+
+exponential.model <- nls(het3$y3~(a*exp(b*het3$x3)),start=list(a=1.1635,b=0.3235 ))#c= Intercept, b=1 -> y =...
+summary(exponential.model)
+cor(het3$x3, het3$y3)
+# Add fitted curve
+#http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/appendix/Appendix-Nonlinear-Regression.pdf
+#lines(lines(seq(-1,length(het2$x2),by=1),predict(exponential.model, data.frame(x1=seq(-1,length(het2$x2)),by=1)), col = "deepskyblue4", lwd=2))
+legend("bottomright", bty="n",legend=('R2 = 0.7879 \nCor = 0.8820\n')) #summary(fit)$adj.r.squared
+summary(m.linear)$r.squared 
+
+f<-function(x,a,b){a*exp(b*x)}
+fit <- nls(het3$y3 ~ f(het3$x3,a,b), start = c(a=0.3913, b=2.6909))
+co<-coef(fit)
+curve(f(x, a=co[1], b=co[2]), add = TRUE, col="black", lwd=2) 
+
+
+#The rest is for other use....
+###############
+#Public energy#
+############### 
+#----------------------------#
+#Detecting Heteroscedasticity#
+#----------------------------#
+y<-data$Public_2010
+summary(y)
+x<-data$Pixel_sum
+summary(x)
+#plot(x, y, main = "DMSP 2010 Sao Paulo",xlab="Sum of lit cell values, log",ylab="Public services energy (MWh), log",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+
+dataset <- data.frame(x, y)
+
+
+#-------------------------------#
+#Dealing with heteroskedasticity#
+#-------------------------------#
+#1.Logged data
+het1<-data.frame(y1=log10(y), x1=log10(x))
+#Infinite number
+#Discarded Municipalities: On boarder with metropolitan - saturation
+
+#__________________
+#1.a.Logged x and y
+plot(het1$x1, het1$y1,main = "Sao Paulo 2010 (log) \nDiscarded 'Core' metropolitan",xlab="Sum of lit cell values, log",ylab="Public services energy (MWh), log",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+points(short.eruptions, col="red", pch=19)
+
+plot(het1$x1, het1$y1,main = "Sao Paulo 2010 (log)",xlab="Sum of lit cell values, log",ylab="Public services energy (MWh), log",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+
+
+#plot(x, y, xlim=c(0, 15000), ylim=c(0, 45000), main = "DMSP 2010 Sao Paulo",xlab="Log Sum of lit cell values",ylab="Log Public services energy (MWh)",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+#Fit no linear model
+y1<-het1$y1
+x1<-het1$x1
+library(nlstools)
+# linear model: a, b
+m.linear<-lm(y1 ~ x1, data=het1)
+summary(m.linear)
+cor(x1, y1)
+abline(m.linear, col="darkred", lwd=2)
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m.linear)$r.squared, digits=4),"\n",legend='Cor = 0.8417181')) #summary(fit)$adj.r.squared
+
+#_______________________________________________________________
+#predictive R^2
+#http://www.r-bloggers.com/can-we-do-better-than-r-squared/
+pr <- residuals(m.linear)/(1 - lm.influence(m.linear)$hat)
+PRESS <- sum(pr^2)
+PRESS
+
+# anova to calculate residual sum of squares
+my.anova <- anova(m.linear)
+tss <- sum(my.anova$"Sum Sq")
+# predictive R^2
+pred.r.squared <- 1 - PRESS/(tss)
+pred.r.squared
+#____________________________________________________________
+#https://stat.ethz.ch/pipermail/r-help/2010-January/224131.html
+#          y = a*exp(b*x)
+# Exp: log(y) = log(a) + b*x + u 
+#          y = a*exp(b*x) + c
+#With Intercept
+#exponential.model <- nls(y1~a*exp(b*x1)+c,start=list(a=1.168,b=1, c=-0.93831),data=het1)#c= Intercept, b=1 -> y =...
+#Without Intercept
+exponential.model <- nls(y1~(a*exp(b*x1)),start=list(a=1.1635,b=0.3235 ))#c= Intercept, b=1 -> y =...
+#Check the trace
+#exponential.model <- nls(y1~a*exp(b*x1)+c,start=list(a=1.168,b=1, c=-0.93831),data=het1, trace=TRUE)#c= Intercept, b=1 -> y =...
+summary(exponential.model)
+cor(x1, y1)
+# Add fitted curve
+#http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/appendix/Appendix-Nonlinear-Regression.pdf
+lines(lines(seq(-1,length(x1),by=1),predict(exponential.model, data.frame(x1=seq(-1,length(x1)),by=1)), col = "deepskyblue4", lwd=2))
+legend("bottomright", bty="n",legend=('R2 = 0.7897 \nCor = 0.8820\n')) #summary(fit)$adj.r.squared
+summary(m.linear)$r.squared 
+
+#TESTS
+#http://www.pmc.ucsc.edu/~mclapham/Rtips/nonparametric.htm
+#levene.test(x1,y1) #The default is the Brown-Forsythe test, using deviations from the median
+#kruskal.test(x1~y1)
+
+#_______________________________________________________
+#residuals vs. fits plot - 1.Logged data (log x, log y)
+#_______________________________________________________
+#http://blog.minitab.com/blog/adventures-in-statistics/regression-analysis-how-do-i-interpret-r-squared-and-assess-the-goodness-of-fit
+yResid<-residuals(exponential.model) #List of residuals
+#plot(density(resid(exponential.model)), ,cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+
+#qqnorm(resid((exponential.model))) # A quantile normal plot - good for checking normality
+#qqline(resid(exponential.model))
+
+#Predict data: Sum of lit cell values 2001
+head(het1)
+length(data$x1)
+xpreds <- data.frame(xpred=c(data$x1))
+#preds <- data.frame(x=249.444931)
+xpreds
+xpred2010<-predict(exponential.model, newdata=xpreds)
+head(xpred2010)
+length(xpred2010)
+#Interval
+#IntervPred2010<-predict(exponential.model, newdata=preds, interval="prediction")
+#head(IntervPred2010)
+
+# Using R graphics
+lmts <- range(d0,d1)
+par(mfrow = c(1, 2))
+
+plot(xpred2010, yResid,
+     main = "Residuals versus fits\nSao Paulo 2010 (log)",
+     xlab="Fitted values",
+     ylab="Residuals",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", 
+     font.lab=2, col.main="deepskyblue4")
+abline(h=0, lwd=2, col="dodgerblue2", type="b", pch=0,  lty=2)
+
+plot(x1, yResid,
+     main = "Residuals versus fits\nSao Paulo 2010 (log)",
+     xlab="Log Electrical power consumption",
+     ylab="Residuals",
+     cex.lab=0.9,cex.axis = 0.9, col.lab="black", 
+     font.lab=2, col.main="deepskyblue4")
+abline(h=0, lwd=2, col="dodgerblue2", type="b", pch=0,  lty=2)
+
+hist(yResid)
+
+#_______________
+#1.b.Logged x
+plot(het1$x1, y, main = "Sao Paulo 2010 (x log)",xlab="Sum of lit cell values, log",ylab="Public services energy (MWh)",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+#plot(x, y, xlim=c(0, 15000), ylim=c(0, 45000), main = "DMSP 2010 Sao Paulo",xlab="Log Sum of lit cell values",ylab="Log Public services energy (MWh)",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+#Fit no linear model
+#y1<-het1$y1
+x1<-het1$x1
+library(nlstools)
+# linear model: a, b
+m.linear<-lm(y ~ x1)
+summary(m.linear)
+abline(m.linear, col="darkred", lwd=2)
+legend("topleft", bty="n", legend=paste(" R2 = ", format(summary(m.linear)$r.squared, digits=4),"\n",legend='Cor = 0.8417181')) #summary(fit)$adj.r.squared
+
+#https://stat.ethz.ch/pipermail/r-help/2010-January/224131.html
+#          y = a*exp(b*x)
+# Exp: log(y) = log(a) + b*x + u 
+#          y = a*exp(b*x) + c
+#With Intercept
+#exponential.model <- nls(y1~a*exp(b*x1)+c,start=list(a=1.168,b=1, c=-0.93831),data=het1)#c= Intercept, b=1 -> y =...
+#Without Intercept
+exponential.model <- nls(y~a*exp(b*x1),start=list(a=0.3913,b=2.6909))#c= Intercept, b=1 -> y =...
+#Check the trace
+#exponential.model <- nls(y1~a*exp(b*x1)+c,start=list(a=1.168,b=1, c=-0.93831),data=het1, trace=TRUE)#c= Intercept, b=1 -> y =...
+summary(exponential.model)
+cor(x1, y)
+# Add fitted curve
+#http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/appendix/Appendix-Nonlinear-Regression.pdf
+#lines(lines(seq(-1,length(x1),by=1),predict(exponential.model, data.frame(x1=seq(-1,length(x1)),by=1)), col = "deepskyblue4", lwd=2))
+
+f<-function(x,a,b){a*exp(b*x)}
+fit <- nls(y ~ f(x1,a,b), start = c(a=0.3913, b=2.6909))
+co<-coef(fit)
+curve(f(x, a=co[1], b=co[2]), add = TRUE, col="deepskyblue4", lwd=2) 
+
+legend("topleft", bty="n",legend=('R2 = 0.7085 \nCor = 0.5071\n')) #summary(fit)$adj.r.squared
+summary(m.linear)$r.squared 
+
+
+
+#_______________
+#1.c.Logged y
+plot(x, het1$y1, main = "Sao Paulo 2010 (y log)",xlab="Sum of lit cell values",ylab="Public services energy (MWh), log",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+#plot(x, y, xlim=c(0, 15000), ylim=c(0, 45000), main = "DMSP 2010 Sao Paulo",xlab="Log Sum of lit cell values",ylab="Log Public services energy (MWh)",cex.lab=0.9,cex.axis = 0.9, col.lab="black", font.lab=2, col.main="deepskyblue4")
+#Fit no linear model
+#y1<-het1$y1
+y1<-het1$y1
+library(nlstools)
+# linear model: a, b
+m.linear<-lm(y1 ~ x)
+summary(m.linear)
+abline(m.linear, col="darkred", lwd=2)
+cor(y1, x)
+legend("bottomright", bty="n", legend=paste(" R2 = ", format(summary(m.linear)$r.squared, digits=4),"\n",legend='Cor = 0.6549823')) #summary(fit)$adj.r.squared
+
+#Power model
+power.model<- nls(y1~b*x^z,start = list(b = 1.1685, z = 0.1406))
+summary(power.model)
+cor(x, y1)
+# Add fitted curve
+#http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/appendix/Appendix-Nonlinear-Regression.pdf
+lines(lines(seq(-1,100000,by=1),predict(power.model, data.frame(x=seq(-1,100000),by=1)), col = "deepskyblue4", lwd=2))
+legend("bottomright", bty="n",legend=('R2 = 0.7178 \nCor = 0.655\n')) #summary(fit)$adj.r.squared
+summary(m.linear)$r.squared 
+
+
+#__________________________
+#Q-Q plot
+#__________________________
+#http://www.statmethods.net/advgraphs/probability.html
+#Check normality - qqnorm: evaluating the fit of sample data to the normal distribution
+qqnorm((y),main = "Sao Paulo 2010 \nNormal Q-Q plot (Raw Y)", col.main="deepskyblue4",
+       ylab="Observed value (Electrical consumption)",
+       xlab="Expected normal value \n(Public electrical consumption)");
+qqline((y), col="deepskyblue4", lwd=2)
+qqnorm((x),main = "Sao Paulo 2010 \nNormal Q-Q plot (Raw X)", col.main="deepskyblue4",
+       ylab="Observed value (Sum of lit DN)",
+       xlab="Expected normal value \n(Sum of lit DN)"); 
+qqline((x), col="deepskyblue4", lwd=2)
+qqnorm((y1),main = "Sao Paulo 2010 \nNormal Q-Q plot (Log Y)", col.main="deepskyblue4",
+       ylab="Observed value (Sum of lit DN)",
+       xlab="Expected normal value \n(Sum of lit DN)"); 
+qqline((y1), col="deepskyblue4", lwd=2)
+qqnorm((x1),main = "Sao Paulo 2010 \nNormal Q-Q plot (Log X)", col.main="deepskyblue4",
+       ylab="Observed value (Electrical consumption)",
+       xlab="Expected normal value \n(Public electrical consumption)");
+qqline((x1), col="deepskyblue4", lwd=2)
+
+# creates a Quantile-Quantile plot for any theoretical distribution
+qqplot(x,y,
+       main = "Sao Paulo 2010 \nQ-Q plot (Raw X, Y)", col.main="deepskyblue4",
+       xlab="Sum of lit DN",ylab="Public services energy")
+qqplot(x1,y1,
+       main = "Sao Paulo 2010 \nQ-Q plot (Log X, Y)", col.main="deepskyblue4",
+       xlab="Sum of lit DN",ylab="Public services energy")
+qqplot(x1,y,
+       main = "Sao Paulo 2010 \nQ-Q plot (Log X, Raw Y)", col.main="deepskyblue4",
+       xlab="Sum of lit DN",ylab="Public services energy")
+qqplot(x,y1,
+       main = "Sao Paulo 2010 \nQ-Q plot (Raw X, Log Y)", col.main="deepskyblue4",
+       xlab="Sum of lit DN",ylab="Public services energy")
+
+#Skewness
+#http://stats.stackexchange.com/questions/52293/r-qqplot-how-to-see-whether-data-are-normally-distributed/52295#52295
+library(nortest)
+library(e1071)
+# skewness they should be around Zero (0.0)
+skewness(x) # Raw X 
+skewness(y) # Raw Y
+skewness(x1)# Log X
+skewness(y1)# Log Y
+
+#Box plot
+boxplot(x,y,
+        main = "Sao Paulo 2010 \nBox plot (Raw X, Y)", col.main="deepskyblue4",
+        las = 2, col = c("royalblue2","cyan3"),
+        at = c(1,2),
+        names = c("Electr.","Sum DN"))
+boxplot(x1, y1,
+        main = "Sao Paulo 2010 \nBox plot (Log X, Y)", col.main="deepskyblue4",
+        las = 2, col = c("royalblue2","cyan3"),
+        names = c("Electr.","Sum DN"))
+
+
+#________________________
+#Box - Cox transformation
+#________________________
+#https://www.google.de/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&ved=0CCcQFjAB&url=http%3A%2F%2Fwww.ics.uci.edu%2F~jutts%2Fst108%2FTransformations_in_R.doc&ei=X6uVVNWpDcasPIW5gZAO&usg=AFQjCNEvDa-m23nThc37fc46Jnk_H1CLfw&sig2=asLk43GVTvOKxTKPogwhvg&bvm=bv.82001339,d.ZWU
+library(MASS)
+#x = Sum of lit values
+#y = Public services electrical power consumption
+plot(x,y)
+boxcox(x~y)
+boxcox(x~y, lambda = seq(0, 0.3, 0.1))
+#dataBCox <- cbind(data, data$Pixel_sum^(-0.022))
+names(dataBCox)[16]<-"Yprime"
+NewModel <- lm( Yprime ~ x,data=dataBCox )
+
+plot(NewModel)
+plot(x,data$Public_2010^0.21)
+v<-data$Public_2010^0.21
+v1<-data$Pixel_sum^(-0.022)
+power.model<- nls(v~b*x^z,start = list(b = 1.1685, z = 0.1406))
+summary(power.model)
+cor(x, y1)
+# Add fitted curve
+#http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/appendix/Appendix-Nonlinear-Regression.pdf
+lines(lines(seq(-1,100000,by=1),predict(power.model, data.frame(x=seq(-1,100000),by=1)), col = "deepskyblue4", lwd=2))
+legend("bottomright", bty="n",legend=('R2 = 0.7178 \nCor = 0.655\n')) #summary(fit)$adj.r.squared
+summary(m.linear)$r.squared 
+
+plot(v1,v)
+m.linear<-lm(v1 ~ v)
+summary(m.linear)
+exponential.model <- nls(v1~a*exp(b*v),start=list(a=0.8888795,b=-0.0078730))#c= Intercept, b=1 -> y =...
+summary(exponential.model)
+lines(lines(seq(-1,length(v),by=1),predict(exponential.model, data.frame(v=seq(-1,length(v)),by=1)), col = "deepskyblue4", lwd=2))
+
